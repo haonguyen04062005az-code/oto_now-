@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Kho xe - AutoAdmin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/admin/analytics.css">
+</head>
+<body>
+    
+    <div class="app-container">
+        
+        <div class="admin-sidebar">
+        <div class="admin-logo">
+            <img src="../../assets/image/logo.png" alt="Logo">
+            <span>ADMIN</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Tổng quan</a></li>
+            <li><a href="inventory.php"><i class="fas fa-car"></i> Kho xe</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Đơn hàng</a></li>
+            <li><a href="danh_gia.html"><i class="fas fa-star"></i> Đánh giá</a></li>
+            <li class="active"><a href="#"><i class="fas fa-chart-line"></i> Thống kê</a></li>
+            <li><a href="users.html"><i class="fas fa-users"></i> Nhân viên</a></li>
+            
+        </ul>
+        <div class="sidebar-footer">
+            <a href="../../../OTO_NOW/"><i class="fas fa-sign-out-alt"></i> Quay về Web</a>
+        </div>
+    </div>
+
+
+        <main class="main-content">
+            
+            <header class="top-header">
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Tìm kiếm dữ liệu...">
+                </div>
+                
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-text">
+                            <span class="user-name">Admin User</span>
+                            <span class="user-status">Đang hoạt động</span>
+                        </div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                
+                <div class="welcome">
+                    <h1>Thống kê & Phân tích</h1>
+                    <p>Chi tiết hiệu suất kinh doanh và dữ liệu tăng trưởng.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card blue">
+                        <div class="card-head">
+                            <span>Tổng Doanh Thu</span>
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="card-value">12.007.386.000 VND</div>
+                        <div class="card-trend pos">
+                            <i class="fas fa-arrow-up"></i> 12% <small>so với tháng trước</small>
+                        </div>
+                    </div>
+
+                    <div class="stat-card cyan">
+                        <div class="card-head">
+                            <span>Tổng Đơn Hàng</span>
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div class="card-value">229</div>
+                        <div class="card-trend pos">
+                            <i class="fas fa-arrow-up"></i> 8% <small>so với tháng trước</small>
+                        </div>
+                    </div>
+
+                    <div class="stat-card green">
+                        <div class="card-head">
+                            <span>Tỉ lệ chuyển đổi</span>
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="card-value">1.83%</div>
+                        <div class="card-trend pos">
+                            <i class="fas fa-arrow-up"></i> 3% <small>so với tháng trước</small>
+                        </div>
+                    </div>
+
+                    
+                </div>
+
+                <div class="charts-grid">
+                <div class="chart-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div>
+                            <h3>Xu hướng doanh thu</h3>
+                            <span class="subtitle">Dữ liệu tài chính năm 2024</span>
+                        </div>
+                        <select style="border: 1px solid #E7EAEF; padding: 5px 10px; border-radius: 6px; outline: none;">
+                            <option>2024</option>
+                            <option>2023</option>
+                        </select>
+                    </div>
+                    
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+    <div class="chart-box">
+        <h3>Top Xe Bán Chạy</h3>
+        <span class="subtitle">Tỉ lệ theo phân khúc</span>
+        
+        <div style="position: relative; height: 250px; width: 100%; display: flex; justify-content: center; margin-top: 20px;">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </main>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // --- CẤU HÌNH MẶC ĐỊNH ---
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#5D6879';
+
+    // ===============================================
+    // 1. BIỂU ĐỒ DOANH THU (AREA CHART - LINE)
+    // ===============================================
+    const ctx1 = document.getElementById('revenueChart').getContext('2d');
+
+    // Tạo màu nền Gradient (Mờ dần từ trên xuống)
+    let gradient = ctx1.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(161, 255, 20, 0.4)'); // Màu Neon đậm
+    gradient.addColorStop(1, 'rgba(161, 255, 20, 0.0)'); // Mờ dần thành trong suốt
+
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: ['Th1', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'],
+            datasets: [{
+                label: 'Doanh thu ($)',
+                data: [150, 230, 180, 320, 290, 450, 410, 520, 480, 600, 580, 750],
+                borderColor: '#A1FF14',       // Viền màu Neon Green
+                backgroundColor: gradient,    // Nền Gradient
+                borderWidth: 3,
+                pointBackgroundColor: '#ffffff',
+                pointBorderColor: '#A1FF14',
+                pointRadius: 4,
+                pointHoverRadius: 7,
+                fill: true,                   // Tô màu bên dưới đường line
+                tension: 0.4                  // Làm đường cong mềm mại
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },   // Ẩn chú thích
+                tooltip: {
+                    backgroundColor: '#020817', // Tooltip nền đen
+                    titleColor: '#A1FF14',      // Chữ tiêu đề Neon
+                    bodyColor: '#fff',
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            return 'Doanh thu: $' + context.parsed.y + 'k';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#F1F5F9', borderDash: [5, 5] },
+                    ticks: { callback: value => '$' + value + 'k' }
+                },
+                x: {
+                    grid: { display: false } // Ẩn lưới dọc
+                }
+            }
+        }
+    });
+
+    // ===============================================
+    // 2. BIỂU ĐỒ PHÂN KHÚC (DOUGHNUT CHART)
+    // ===============================================
+    const ctx2 = document.getElementById('categoryChart').getContext('2d');
+
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Sedan', 'SUV', 'Luxury', 'Sports', 'Khác'],
+            datasets: [{
+                data: [30, 40, 15, 10, 5],
+                backgroundColor: [
+                    '#020817', // Đen (Màu phụ)
+                    '#A1FF14', // Neon Green (Màu chính)
+                    '#3B82F6', // Xanh dương
+                    '#64748B', // Xám
+                    '#E2E8F0'  // Xám nhạt
+                ],
+                borderWidth: 0,
+                hoverOffset: 15 // Khi di chuột thì miếng bánh to ra
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%', // Độ rỗng ở giữa (Tạo hình vòng tròn mỏng đẹp)
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        pointStyle: 'circle',
+                        font: { size: 12, weight: 600 }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#020817',
+                    bodyColor: '#fff',
+                    callbacks: {
+                        label: function(context) {
+                            return ' ' + context.label + ': ' + context.parsed + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - OTONOW</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="/OTO_NOW/">
+                <img class="logo-img" src="../../assets/image/logo.png" alt="OTONOW">
+            </a>
+        </div>
+        <div class="header-tools">
+            <i class="fa-solid fa-magnifying-glass"></i> 
+            <span style="margin: 0 10px">EN / DE</span>
+            <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="left-panel">
+            <div class="form-wrapper">
+                <h1>Chào mừng bạn trở lại</h1>
+                <p class="subtitle">Vui lòng nhập thông tin đăng nhập của bạn.</p>
+
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Nhập email của bạn" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Mật khẩu</label>
+                        <input type="password" id="password" placeholder="Nhập mật khẩu của bạn" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <label class="checkbox-container">
+                            <input type="checkbox"> Nhớ trong 30 ngày
+                        </label>
+                        <a href="Quen_MK.html" class="forgot-pass">Quên mật khẩu?</a>
+                    </div>
+
+                    <form id="loginForm">
+                        <button type="button" class="btn-login" onclick="handleLogin()">Đăng nhập</button>
+                    </form>
+                    
+                    <button type="button" class="btn-google" onclick="handleGoogleLogin()">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="G" width="20">
+                        Đăng nhập với Google
+                    </button>
+                </form>
+
+                <p class="register-link">Chưa có tài khoản? <a href="Tao_tk.html">Đăng ký ngay</a></p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="testimonial-box">
+                <p class="quote" id="t-quote">“In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document...”</p>
+                <div class="box-footer">
+                    <div class="author-info">
+                        <h3 id="t-author">Sam Kolder</h3>
+                        <p id="t-location">Los Angeles, California, USA</p>
+                    </div>
+                    <div class="right-actions">
+                        <div class="rating" id="t-rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="nav-arrows">
+                            <button class="circle-btn" id="btn-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="circle-btn" id="btn-next"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="../../assets/js/slider.js"></script>
+        </div>
+    </div>
+    
+    <script>
+        function handleLogin(event) {
+            if (event) event.preventDefault();
+            const emailInput = document.getElementById('email');
+            const passInput = document.getElementById('password');
+            const btn = document.querySelector('.btn-login');
+
+            const email = emailInput.value.trim();
+            const password = passInput.value.trim();
+            if (!email || !password) {
+                alert('Vui lòng nhập đầy đủ email và mật khẩu!');
+                return;
+            }
+
+            btn.innerText = 'Đang xử lý...';
+            btn.disabled = true;
+
+            fetch('login_process.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ email, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.innerText = 'Đăng nhập';
+                btn.disabled = false;
+                if (data.status === 'success') {
+                    alert('Đăng nhập thành công!');
+                    if (data.role === 'admin') {
+                        window.location.href = '../admin/dashboard.html';
+                    } else {
+                        window.location.href = '../../index.html';
+                    }
+                } else {
+                    if (data.field === 'email') {
+                        alert(data.message || 'Email không hợp lệ');
+                    } else if (data.field === 'password') {
+                        alert(data.message || 'Mật khẩu sai');
+                    } else {
+                        alert(data.message || 'Đăng nhập thất bại');
+                    }
+                }
+            })
+            .catch(() => {
+                btn.innerText = 'Đăng nhập';
+                btn.disabled = false;
+                alert('Lỗi kết nối máy chủ. Vui lòng thử lại.');
+            });
+        }
+
+        function handleGoogleLogin() {
+            // Redirect đến trang đăng nhập Google
+            window.location.href = 'gg_dn.html';
+        }
+
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                handleLogin(e);
+            }
+        });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Đơn hàng - AutoAdmin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../assets/css/admin/admin.css"> 
+
+    <style>
+        /* CSS Giao diện chuẩn */
+        body { background-color: #F1F5F9; margin: 0; font-family: 'Inter', sans-serif; color: #0F172A; }
+        
+        .top-navbar { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .search-wrapper { position: relative; width: 300px; }
+        .search-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #A1FF14; font-size: 16px;}
+        .search-wrapper input { width: 100%; padding: 10px 10px 10px 40px; border: 1px solid #E2E8F0; border-radius: 8px; outline: none; background: #F8FAFC; box-sizing: border-box; }
+        .admin-profile { display: flex; align-items: center; gap: 15px; }
+        .admin-profile-text { text-align: right; }
+        .admin-profile-text strong { display: block; font-size: 14px; }
+        .admin-profile-text span { font-size: 12px; color: #16A34A; }
+        .admin-avatar { width: 40px; height: 40px; background: #A1FF14; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; position: relative; }
+        .admin-avatar::after { content: ''; width: 10px; height: 10px; background: #16A34A; border-radius: 50%; position: absolute; bottom: 0; right: 0; border: 2px solid #fff; }
+
+        .page-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .page-title h2 { margin: 0; font-size: 24px; font-weight: 800; }
+        .page-title p { margin: 5px 0 0 0; color: #64748B; font-size: 14px; }
+        .btn-export { background: #A1FF14; color: #000; padding: 10px 20px; border-radius: 8px; font-weight: 700; text-decoration: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(161, 255, 20, 0.3); transition: 0.3s; }
+        .btn-export:hover { transform: translateY(-2px); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: #fff; padding: 25px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .stat-info h3 { margin: 0; font-size: 28px; font-weight: 800; color: #0F172A; }
+        .stat-info p { margin: 5px 0 0 0; color: #64748B; font-size: 14px; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .icon-bag { background: #DCFCE7; color: #16A34A; }
+        .icon-money { background: #FEF9C3; color: #CA8A04; }
+        .icon-clock { background: #E0F2FE; color: #0284C7; }
+
+        .filter-row { display: flex; gap: 15px; margin-bottom: 20px; }
+        .filter-select { padding: 10px 15px; border: 1px solid #E2E8F0; border-radius: 8px; background: #fff; outline: none; font-family: 'Inter', sans-serif; cursor: pointer; }
+
+        .order-table-container { background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #F8FAFC; color: #64748B; font-size: 12px; font-weight: 600; padding: 15px 20px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #E2E8F0; }
+        td { padding: 18px 20px; border-bottom: 1px solid #F1F5F9; font-size: 14px; vertical-align: middle; }
+        tbody tr:hover { background: #F8FAFC; }
+        
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+        .bg-green { background: #DCFCE7; color: #166534; }
+        .bg-blue { background: #E0F2FE; color: #0369A1; }
+        .bg-yellow { background: #FEF08A; color: #854D0E; }
+        
+        .action-btn { background: #DCFCE7; color: #16A34A; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
+        .action-btn:hover { background: #16A34A; color: #fff; transform: scale(1.1); }
+
+        /* ================= CSS POPUP CHI TIẾT ĐƠN HÀNG ================= */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(4px); }
+        .modal-box { background: #fff; width: 500px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); overflow: hidden; animation: modalFadeIn 0.3s ease; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; }
+        .modal-header h3 { margin: 0; font-size: 18px; color: #0F172A; }
+        .close-modal { font-size: 24px; color: #64748B; cursor: pointer; transition: 0.2s; }
+        .close-modal:hover { color: #EF4444; }
+        
+        .modal-body { padding: 25px; max-height: 60vh; overflow-y: auto; }
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px dashed #E2E8F0; padding-bottom: 12px; }
+        .detail-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .detail-label { color: #64748B; font-weight: 500; font-size: 14px; }
+        .detail-value { color: #0F172A; font-weight: 600; font-size: 15px; text-align: right; max-width: 60%; }
+        
+        .modal-footer { padding: 15px 25px; border-top: 1px solid #E2E8F0; display: flex; justify-content: flex-end; gap: 10px; background: #F8FAFC; }
+        .btn-cancel { padding: 10px 20px; border: 1px solid #CBD5E1; background: #fff; color: #475569; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-cancel:hover { background: #F1F5F9; }
+        .btn-save { padding: 10px 20px; border: none; background: #16A34A; color: #fff; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-save:hover { background: #15803D; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-sidebar">
+        <div class="admin-logo">
+            <img src="../../assets/image/logo.png" alt="Logo" onerror="this.style.display='none'">
+            <span>ADMIN</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Tổng quan</a></li>
+            <li><a href="inventory.php"><i class="fas fa-car"></i> Kho xe</a></li>
+            <li class="active"><a href="#"><i class="fas fa-shopping-cart"></i> Đơn hàng</a></li>
+            <li><a href="danh_gia.html"><i class="fas fa-star"></i> Đánh giá</a></li>
+            <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Thống kê</a></li>
+            <li><a href="nhan_vien.html"><i class="fas fa-users"></i> Nhân viên</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="../../../OTO_NOW/"><i class="fas fa-sign-out-alt"></i> Quay về Web</a>
+        </div>
+    </div>
+
+    <div class="admin-content" style="padding: 0;">
+        <div class="top-navbar">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Tìm kiếm đơn hàng, tên khách...">
+            </div>
+            <div class="admin-profile">
+                <i class="fas fa-bell" style="color: #A1FF14; font-size: 18px; margin-right: 10px;"></i>
+                <div class="admin-profile-text">
+                    <strong>Admin User</strong>
+                    <span>Đang hoạt động</span>
+                </div>
+                <div class="admin-avatar"><i class="fas fa-user" style="color: #000;"></i></div>
+            </div>
+        </div>
+
+        <div style="padding: 0 30px 30px 30px;">
+            <div class="page-header-row">
+                <div class="page-title">
+                    <h2>Danh sách Đơn hàng</h2>
+                    <p>Xem và quản lý tất cả đơn đặt hàng của khách.</p>
+                </div>
+                <button class="btn-export" id="exportBtn"><i class="fas fa-file-export"></i> Xuất báo cáo CSV</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info"><h3 id="stat-total-orders">--</h3><p>Tổng đơn hàng</p></div>
+                    <div class="stat-icon icon-bag"><i class="fas fa-shopping-bag"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info"><h3 id="stat-total-revenue">-- VND</h3><p>Doanh thu</p></div>
+                    <div class="stat-icon icon-money"><i class="fas fa-dollar-sign"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-info"><h3 id="stat-pending-orders">--</h3><p>Chờ xử lý / Đặt cọc</p></div>
+                    <div class="stat-icon icon-clock"><i class="far fa-clock"></i></div>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <select class="filter-select" id="statusFilter">
+                    <option value="all">Tất cả đơn hàng</option>
+                    <option value="Đã đặt cọc">Đã đặt cọc</option>
+                    <option value="Đang giao">Đang giao</option>
+                    <option value="Hoàn thành">Hoàn thành</option>
+                    <option value="Chờ xử lý">Chờ xử lý</option>
+                </select>
+                <select class="filter-select">
+                    <option>Tháng này</option>
+                    <option>Tháng trước</option>
+                    <option>Năm nay</option>
+                </select>
+            </div>
+
+            <div class="order-table-container">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>MÃ ĐƠN</th>
+                            <th>KHÁCH HÀNG</th>
+                            <th>DÒNG XE</th>
+                            <th>GIÁ TRỊ</th>
+                            <th>TRẠNG THÁI</th>
+                            <th>NGÀY ĐẶT</th>
+                            <th style="text-align: center;">HÀNH ĐỘNG</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersBody">
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding: 40px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #16A34A;"></i> Đang tải dữ liệu...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="orderDetailModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Chi tiết đơn <span id="modal-ma-don" style="color: #2563EB;"></span></h3>
+                <span class="close-modal" onclick="closeOrderDetail()">&times;</span>
+            </div>
+            <div class="modal-body" id="orderDetailContent">
+                </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeOrderDetail()">Đóng</button>
+                <button class="btn-save" onclick="window.print()"><i class="fas fa-print"></i> In đơn hàng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Biến toàn cục để lưu lại dữ liệu API, giúp xem chi tiết mượt mà không cần gọi lại DB
+        let globalOrdersData = [];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadOrders();
+
+            document.getElementById('searchInput').addEventListener('input', filterOrders);
+            document.getElementById('statusFilter').addEventListener('change', filterOrders);
+
+            // Tắt modal khi click ra ngoài vùng đen
+            window.onclick = function(e) { 
+                const modal = document.getElementById('orderDetailModal');
+                if(e.target == modal) closeOrderDetail(); 
+            }
+
+            // XUẤT CSV
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                let csv = [];
+                let headers = [];
+                const ths = document.querySelectorAll('.user-table thead th');
+                for (let j = 0; j < ths.length - 1; j++) headers.push('"' + ths[j].innerText + '"');
+                csv.push(headers.join(','));
+
+                const rows = document.querySelectorAll('#ordersBody tr.order-row');
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].style.display !== 'none') {
+                        let row = [];
+                        const cols = rows[i].querySelectorAll('td');
+                        for (let j = 0; j < cols.length - 1; j++) {
+                            let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
+                            row.push('"' + data + '"');
+                        }
+                        csv.push(row.join(','));
+                    }
+                }
+                const csvFile = new Blob(["\uFEFF" + csv.join('\n')], {type: "text/csv;charset=utf-8;"});
+                const downloadLink = document.createElement("a");
+                downloadLink.download = "Bao_cao_don_hang_OTONOW.csv";
+                downloadLink.href = window.URL.createObjectURL(csvFile);
+                downloadLink.style.display = "none";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            });
+        });
+
+        // HÀM LỌC
+        function filterOrders() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusValue = document.getElementById('statusFilter').value;
+            const tableRows = document.querySelectorAll('#ordersBody tr.order-row');
+
+            tableRows.forEach(row => {
+                const textContent = row.innerText.toLowerCase();
+                const badgeEl = row.querySelector('.badge');
+                const statusBadge = badgeEl ? badgeEl.innerText.trim() : '';
+                
+                const matchSearch = textContent.includes(searchTerm);
+                const matchStatus = (statusValue === 'all') || (statusBadge === statusValue);
+
+                if (matchSearch && matchStatus) row.style.display = '';
+                else row.style.display = 'none';
+            });
+        }
+
+        // HÀM TẢI DỮ LIỆU ĐƠN HÀNG
+        async function loadOrders() {
+            const tbody = document.getElementById('ordersBody');
+            
+            try {
+                const response = await fetch('../../api_get_orders.php');
+                const data = await response.json();
+
+                if (!data.orders || data.orders.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#64748B; padding:30px;">Chưa có đơn đặt hàng nào trong hệ thống.</td></tr>';
+                    return;
+                }
+
+                // Lưu dữ liệu vào biến toàn cục để xem chi tiết
+                globalOrdersData = data.orders;
+
+                const formatMoney = (money) => new Intl.NumberFormat('vi-VN').format(money);
+
+                document.getElementById('stat-total-orders').innerText = data.orders.length;
+                document.getElementById('stat-total-revenue').innerText = formatMoney(data.total_revenue) + " VND";
+                let pendingCount = data.orders.filter(o => o.trang_thai.includes('cọc') || o.trang_thai.includes('Chờ')).length;
+                document.getElementById('stat-pending-orders').innerText = pendingCount;
+
+                let html = '';
+                data.orders.forEach(order => {
+                    let badgeClass = 'bg-yellow'; 
+                    let statusText = order.trang_thai;
+                    if (statusText.toLowerCase().includes('giao') || statusText.toLowerCase().includes('hoàn thành')) badgeClass = 'bg-green'; 
+                    else if (statusText.toLowerCase().includes('cọc')) badgeClass = 'bg-blue';
+
+                    const dateObj = new Date(order.ngay_tao);
+                    const dateStr = `${dateObj.getDate().toString().padStart(2,'0')}/${(dateObj.getMonth()+1).toString().padStart(2,'0')}/${dateObj.getFullYear()}`;
+
+                    // GẮN SỰ KIỆN onclick="viewOrderDetail('Mã đơn')" VÀO NÚT CON MẮT
+                    html += `
+                        <tr class="order-row">
+                            <td style="font-weight: 700;">${order.ma_don}</td>
+                            <td>
+                                <div style="font-weight: 600; color: #1E293B;">${order.ten_khach}</div>
+                                <div style="font-size: 12px; color: #94A3B8;">${order.sdt}</div>
+                            </td>
+                            <td style="color: #334155;">${order.ten_xe}</td>
+                            <td style="font-weight: 600; color: #0F172A;">${formatMoney(order.gia_tri)} VND</td>
+                            <td><span class="badge ${badgeClass}">${statusText}</span></td>
+                            <td style="color: #64748B;">${dateStr}</td>
+                            <td style="text-align: center;">
+                                <button class="action-btn" title="Xem chi tiết" onclick="viewOrderDetail('${order.ma_don}')"><i class="fas fa-eye"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+
+            } catch (error) {
+                console.error("Lỗi tải dữ liệu:", error);
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: red; padding:30px;">Không thể kết nối đến máy chủ CSDL.</td></tr>';
+            }
+        }
+
+        // ================= HÀM XEM CHI TIẾT ĐƠN HÀNG =================
+        function viewOrderDetail(maDon) {
+            // Lục tìm đơn hàng trong kho lưu trữ toàn cục
+            const order = globalOrdersData.find(o => o.ma_don === maDon);
+            if(!order) return;
+
+            // Định dạng lại các con số
+            const formatMoney = (money) => new Intl.NumberFormat('vi-VN').format(money);
+            const dateObj = new Date(order.ngay_tao);
+            const dateStr = `${dateObj.getHours().toString().padStart(2,'0')}:${dateObj.getMinutes().toString().padStart(2,'0')} - ${dateObj.getDate().toString().padStart(2,'0')}/${(dateObj.getMonth()+1).toString().padStart(2,'0')}/${dateObj.getFullYear()}`;
+
+            let badgeClass = 'bg-yellow'; 
+            let statusText = order.trang_thai;
+            if (statusText.toLowerCase().includes('giao') || statusText.toLowerCase().includes('hoàn thành')) badgeClass = 'bg-green'; 
+            else if (statusText.toLowerCase().includes('cọc')) badgeClass = 'bg-blue';
+
+            // Lấy dữ liệu Nơi nhận xe (Nếu đơn hàng cũ chưa có thì để mặc định)
+            const hinhThuc = order.hinh_thuc_giao || 'Nhận tại Showroom';
+            const diaChi = order.dia_chi_giao || 'Showroom OTO NOW';
+            const iconGiao = hinhThuc.includes('nhà') ? 'fa-truck' : 'fa-store';
+
+            // Điền ID đơn lên thẻ Header của Popup
+            document.getElementById('modal-ma-don').innerText = `#${order.ma_don}`;
+
+            // Tạo HTML cho phần thân của Popup (ĐÃ BỔ SUNG 2 DÒNG ĐỊA CHỈ)
+            const contentHtml = `
+                <div class="detail-row">
+                    <span class="detail-label">Tên khách hàng:</span>
+                    <span class="detail-value" style="color: #2563EB;">${order.ten_khach}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Số điện thoại liên hệ:</span>
+                    <span class="detail-value" style="font-weight: 700;">${order.sdt}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Tên xe đã đặt:</span>
+                    <span class="detail-value">${order.ten_xe}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Tổng giá trị xe:</span>
+                    <span class="detail-value" style="color: #EF4444;">${formatMoney(order.gia_tri)} VND</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Tiền khách đã cọc:</span>
+                    <span class="detail-value" style="color: #16A34A;">${formatMoney(order.tien_coc)} VND</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Hình thức nhận xe:</span>
+                    <span class="detail-value"><i class="fas ${iconGiao}" style="color: #64748B; margin-right: 5px;"></i> ${hinhThuc}</span>
+                </div>
+                <div class="detail-row" style="${hinhThuc.includes('nhà') ? '' : 'display:none;'}">
+                    <span class="detail-label">Địa chỉ giao xe:</span>
+                    <span class="detail-value" style="font-weight: 500; font-size: 14px; text-align: right; line-height: 1.5;">${diaChi}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Ngày tạo đơn:</span>
+                    <span class="detail-value">${dateStr}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Trạng thái hiện tại:</span>
+                    <span class="detail-value"><span class="badge ${badgeClass}">${statusText}</span></span>
+                </div>
+            `;
+            
+            document.getElementById('orderDetailContent').innerHTML = contentHtml;
+            document.getElementById('orderDetailModal').style.display = 'flex'; // Hiện Popup
+        }
+
+        // HÀM ĐÓNG POPUP
+        function closeOrderDetail() {
+            document.getElementById('orderDetailModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

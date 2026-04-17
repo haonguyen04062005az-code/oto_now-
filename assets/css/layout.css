@@ -1,0 +1,101 @@
+/* --- 2. BỐ CỤC (LAYOUT) --- */
+
+/* HEADER */
+header {
+    position: absolute; /* Giữ nguyên absolute để đè lên ảnh/nền */
+    top: 0; left: 0; right: 0;
+    
+    /* CỐ ĐỊNH CHIỀU CAO ĐỂ CĂN GIỮA CHUẨN */
+    height: 70px; 
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    /* QUAN TRỌNG: Chỉnh padding trái/phải về 28px để thẳng hàng với nội dung bên dưới */
+    padding: 0 28px; 
+    
+    z-index: 100;
+    
+    /* Thêm màu nền trắng mờ (Glassmorphism) giống thiết kế cũ cho đẹp */
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Fix lỗi hiển thị nhóm nút bên phải (Search, EN/DE, Menu) */
+.header-tools {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Tăng khoảng cách giữa các icon cho thoáng */
+    height: 100%;
+}
+
+/* MAIN CONTAINER */
+.main-container {
+    display: flex;
+    height: 100vh; /* Chiếm toàn màn hình */
+    width: 100%;
+}
+
+/* CỘT TRÁI */
+.left-panel {
+    background-color: #F8FAFC;
+    width: 50%;
+    min-width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    padding: 80px 40px 40px 40px; /* Padding top lớn để tránh header */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.form-wrapper {
+    background-color: #ffffff; /* Nền trắng */
+    width: 100%;
+    max-width: 480px; /* Giới hạn chiều rộng cho đẹp */
+    padding: 40px;    /* Khoảng cách từ viền vào nội dung */
+    
+    /* Hiệu ứng bo góc và đổ bóng */
+    border-radius: 24px; 
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); 
+    border: 1px solid #EEF2F6; /* Viền mờ nhẹ */
+    margin: 0 auto;
+}
+.form-wrapper .subtitle {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #64748b;
+}
+.form-wrapper h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #1e293b;
+    text-align: center; /* Căn giữa chữ */
+}
+
+/* CỘT PHẢI - Ảnh nền */
+.right-panel {
+    width: 50%;
+    /* ĐƯỜNG DẪN ẢNH: Từ thư mục css ra thư mục image là ../image/ */
+    background-image: url('../image/background.png'); 
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    
+    display: flex;
+    align-items: flex-end; /* Đẩy nội dung xuống đáy */
+    justify-content: center;
+    padding: 60px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .main-container { flex-direction: column; height: auto; }
+    .left-panel, .right-panel { width: 100%; min-width: 0; height: auto; }
+    .right-panel { height: 500px; order: -1; padding: 20px; }
+    header { position: relative; background: #fff; }
+}

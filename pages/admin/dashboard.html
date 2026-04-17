@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tổng quan - AutoAdmin</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../assets/css/admin/admin-layout.css">
+
+    <link rel="stylesheet" href="../../assets/css/admin/dashboard.css"> 
+</head>
+<script>
+    // BẢO VỆ GIAO DIỆN ADMIN - KHÔNG CÓ QUYỀN SẼ BỊ ĐUỔI VỀ TRANG CHỦ
+    const STRICT_ADMIN_EMAIL = "admin@otonow.com"; // Điền đúng email admin của bạn
+
+    const checkSession = localStorage.getItem("currentUser");
+    if (!checkSession) {
+        alert("Vui lòng đăng nhập!");
+        window.location.href = "index.html"; // Chú ý: Sửa lại đường dẫn index.html cho đúng nếu file admin nằm trong thư mục con
+    } else {
+        const userCheck = JSON.parse(checkSession);
+        if (userCheck.email !== STRICT_ADMIN_EMAIL) {
+            alert("Cảnh báo: Bạn không có quyền truy cập vào khu vực Quản trị!");
+            window.location.href = "index.html"; // Đuổi về trang chủ
+        }
+    }
+</script>
+<body>
+    <div class="app-container">
+        <div class="admin-sidebar">
+        <div class="admin-logo">
+            <img src="../../assets/image/logo.png" alt="Logo">
+            <span>ADMIN</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li  class="active"><a href="#"><i class="fas fa-th-large"></i> Tổng quan</a></li>
+            <li><a href="inventory.php"><i class="fas fa-car"></i> Kho xe</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Đơn hàng</a></li>
+            <li><a href="danh_gia.html"><i class="fas fa-star"></i> Đánh giá</a></li>
+            <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Thống kê</a></li>
+            <li><a href="users.html"><i class="fas fa-users"></i> Nhân viên</a></li>
+            
+        </ul>
+        <div class="sidebar-footer">
+            <a href="../../../OTO_NOW/"><i class="fas fa-sign-out-alt"></i> Quay về Web</a>
+        </div>
+    </div>
+
+
+        <div class="main-wrapper">
+            <header class="main-header">
+                <div class="header-left">
+                    <i class="fas fa-bars close-icon" style="cursor: pointer; color: #64748B;"></i>
+                </div>
+                <div class="header-right">
+                    <div class="notification">
+                        <i class="far fa-bell"></i>
+                        <span class="dot"></span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="name">Admin User</span>
+                            <span class="status">Đang hoạt động</span>
+                        </div>
+                        <div class="avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content-body">
+                <header class="top-bar">
+                <div class="page-info">
+                    <h1>Tổng quan</h1>
+                    <p>Chào mừng quay trở lại, Admin!</p>
+                </div>
+                <div class="actions-top">
+            <button class="btn-primary">
+                <i class="fas fa-download"></i> Tải báo cáo
+            </button>
+        </div>
+            </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card blue">
+                        <div class="stat-content">
+                            <span class="label">Tổng số xe</span>
+                            <h2 class="value">2,680</h2>
+                            <small class="trend">↗ +12% so với tháng trước</small>
+                        </div>
+                        <i class="fas fa-car-side bg-icon"></i>
+                        <div class="bg-number">420</div>
+                    </div>
+
+                    <div class="stat-card cyan">
+                        <div class="stat-content">
+                            <span class="label">Xe bán tháng này</span>
+                            <h2 class="value">58</h2>
+                            <small class="trend">→ 0% so với tháng trước</small>
+                        </div>
+                        <i class="fas fa-chart-line bg-icon"></i>
+                        <div class="bg-number">58</div>
+                    </div>
+
+                    <div class="stat-card green">
+                        <div class="stat-content">
+                            <span class="label">Doanh thu</span>
+                            <h2 class="value">14.209.614.000 VND</h2>
+                            <small class="trend">↗ +15% so với tháng trước</small>
+                        </div>
+                        <span class="bg-icon-text">$</span>
+                        <div class="bg-number">$$</div>
+                    </div>
+
+                    <div class="stat-card purple">
+                        <div class="stat-content">
+                            <span class="label">Đang niêm yết</span>
+                            <h2 class="value">156</h2>
+                            <small class="trend">↘ -4% so với tháng trước</small>
+                        </div>
+                        <i class="fas fa-th-list bg-icon"></i>
+                        <div class="bg-number">156</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid-bottom">
+                    <div class="card chart-card">
+                        <h3>Xu hướng doanh thu</h3>
+                        <p>Doanh thu và doanh số trong 6 tháng qua</p>
+                        <div class="chart-placeholder" id="revenueChart" style="height: 240px; display: flex; align-items: flex-end; gap: 10px; padding: 10px; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; margin-top: 12px;">
+                            <!-- Bars sẽ được vẽ bằng JS -->
+                        </div>
+                        <div id="revenueLabels" style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: #334155;"> </div>
+                    </div>
+                    <div class="card inventory-card">
+                        <h3>Phân loại xe</h3>
+                        <p>Theo nhiên liệu</p>
+                        <div class="donut-chart"></div>
+                        <div class="chart-legend" style="text-align: center; margin-top: 10px;">
+                            <span style="color: #00BAE7;">● Xăng</span>
+                            <span style="color: #7C3AED; margin-left: 10px;">● Điện</span>
+                            <span style="color: #E2E8F0; margin-left: 10px;">● Khác</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script>
+        const revenueData = [
+            { month: '10/2025', revenue: 980000000 },
+            { month: '11/2025', revenue: 1125000000 },
+            { month: '12/2025', revenue: 1320000000 },
+            { month: '01/2026', revenue: 1270000000 },
+            { month: '02/2026', revenue: 1450000000 },
+            { month: '03/2026', revenue: 1580000000 }
+        ];
+
+        const max = Math.max(...revenueData.map(d => d.revenue));
+        const chart = document.getElementById('revenueChart');
+        const labels = document.getElementById('revenueLabels');
+
+        const lowThreshold = 1150000000;
+        const mediumThreshold = 1360000000;
+
+        revenueData.forEach((d, i) => {
+            const heightPercent = Math.round((d.revenue / max) * 100);
+            const barContainer = document.createElement('div');
+            barContainer.style.display = 'flex';
+            barContainer.style.flexDirection = 'column';
+            barContainer.style.justifyContent = 'flex-end';
+            barContainer.style.alignItems = 'center';
+            barContainer.style.width = 'calc((100% / 6) - 10px)';
+
+            const bar = document.createElement('div');
+            let color = '#22c55e';
+            if (d.revenue < lowThreshold) color = '#f97316';
+            else if (d.revenue < mediumThreshold) color = '#facc15';
+            bar.style.background = `linear-gradient(180deg, ${color}, #0f172a)`;
+            bar.style.width = '100%';
+            bar.style.height = `${heightPercent}%`;
+            bar.style.minHeight = '12px';
+            bar.style.borderRadius = '8px 8px 4px 4px';
+            bar.style.boxShadow = '0 4px 10px rgba(0,0,0,0.08)';
+            bar.title = `${d.month}: ${d.revenue.toLocaleString('vi-VN')} ₫`;
+
+            const tag = document.createElement('span');
+            tag.style.fontSize = '10px';
+            tag.style.color = '#334155';
+            tag.style.marginTop = '4px';
+            tag.innerText = d.revenue >= mediumThreshold ? 'Cao' : (d.revenue >= lowThreshold ? 'TB' : 'Thấp');
+
+            barContainer.appendChild(bar);
+            barContainer.appendChild(tag);
+            chart.appendChild(barContainer);
+
+            const label = document.createElement('div');
+            label.style.width = 'calc((100% / 6) - 10px)';
+            label.style.textAlign = 'center';
+            label.style.fontSize = '11px';
+            label.style.color = '#334155';
+            label.innerText = d.month;
+            labels.appendChild(label);
+        });
+        
+        document.addEventListener("DOMContentLoaded", async function() {
+            try {
+                // Lấy thông tin từ API
+                const response = await fetch('../../api_get_orders.php');
+                const data = await response.json();
+                
+                const formatMoney = (money) => new Intl.NumberFormat('vi-VN').format(money) + ' ₫';
+                
+                // Cập nhật số liệu lên giao diện
+                const doanhThuEl = document.getElementById('tong-doanh-thu');
+                if(doanhThuEl) doanhThuEl.innerText = formatMoney(data.total_revenue);
+
+                const soDonEl = document.getElementById('tong-don-hang');
+                if(soDonEl) soDonEl.innerText = data.orders.length;
+
+            } catch(error) {
+                console.log("Lỗi tải doanh thu:", error);
+            }
+        });
+    </script>
+</body>
+</html>

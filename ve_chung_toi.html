@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Về chúng tôi - OTO NOW</title>
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ================= CẤU HÌNH CSS TRANG VỀ CHÚNG TÔI ================= */
+        body { background: #f8fafc; }
+
+        .about-page-wrapper {
+            width: 100%;
+            max-width: 1240px; 
+            margin: 120px auto 50px auto;    
+            padding: 0 20px; 
+            font-family: 'Inter', sans-serif;
+            color: #333;
+        }
+
+        /* --- BREADCRUMB & TIÊU ĐỀ --- */
+        .breadcrumb { margin-bottom: 15px; text-align: center; }
+        .breadcrumb a { color: #94A3B8; font-size: 13px; text-decoration: none; transition: 0.2s; }
+        .breadcrumb a:hover { color: var(--primary-dark); }
+        .breadcrumb span { color: #0F172A; font-size: 13px; font-weight: 600; }
+
+        .page-title { 
+            font-size: 42px; font-weight: 800; color: #0F172A; 
+            margin: 0 0 40px 0; letter-spacing: -1px; text-align: center; 
+        }
+
+        /* --- KHUNG NỘI DUNG CHÍNH --- */
+        .about-container {
+            background: #fff; 
+            padding: 60px; 
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); 
+            border: 1px solid #E2E8F0;
+        }
+
+        .about-section { margin-bottom: 50px; }
+        .about-section:last-child { margin-bottom: 0; }
+        
+        .about-heading {
+            font-size: 24px; font-weight: 800; color: #0F172A;
+            margin-bottom: 15px;
+        }
+        .about-text {
+            font-size: 16px; line-height: 1.8; color: #475569;
+            text-align: justify; margin-bottom: 15px;
+        }
+
+        /* --- DANH SÁCH QUY TRÌNH (6 BƯỚC) --- */
+        .process-box {
+            background: #F8FAFC;
+            padding: 40px; border-radius: 16px;
+            margin-top: 30px; border: 1px dashed #CBD5E1;
+        }
+        .process-title {
+            font-size: 20px; font-weight: 700; color: #0F172A;
+            margin-bottom: 25px; text-align: center;
+        }
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .process-item {
+            display: flex; align-items: center; gap: 15px;
+            background: #fff; padding: 20px; border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            transition: 0.3s;
+        }
+        .process-item:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(161, 255, 20, 0.1); }
+        .process-icon {
+            width: 40px; height: 40px; background: #000; color: var(--primary);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 900; flex-shrink: 0;
+        }
+        .process-text { font-size: 15px; font-weight: 600; color: #334155; }
+
+        @media (max-width: 768px) {
+            .about-container { padding: 30px; }
+            .process-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <script src="/OTO_NOW/header.js"></script>
+
+    <div class="about-page-wrapper">
+        <div class="breadcrumb">
+            <a href="index.html">Trang chủ</a> / <span>Về chúng tôi</span>
+        </div>
+        <h1 class="page-title">Chúng Tôi Là Ai</h1>
+
+        <div class="about-container">
+            
+            <div class="about-section">
+                <div class="about-heading">Lịch sử hình thành</div>
+                <p class="about-text">
+                    Với hơn 25 năm kinh nghiệm trong ngành công nghiệp ô tô cao cấp, đội ngũ sáng lập OTO NOW luôn ấp ủ một tầm nhìn: Đơn giản hóa quy trình mua xe sang tại Việt Nam. Chúng tôi tạo ra một nền tảng thông minh để khách hàng có được sự minh bạch tuyệt đối về thông số, giá cả và thủ tục, giúp mỗi quyết định mua sắm trở nên dễ dàng và an tâm hơn bao giờ hết.
+                </p>
+                <p class="about-text">
+                    OTO NOW tự hào kết nối trực tiếp với các cơ sở dữ liệu xe cập nhật nhất toàn cầu, mang đến cho người mua một hệ sinh thái thông tin chuyên sâu trên một giao diện thân thiện, sang trọng.
+                </p>
+            </div>
+
+            <div class="about-section">
+                <div class="about-heading">Điểm đến duy nhất cho mọi giao dịch</div>
+                <p class="about-text">
+                    OTO NOW không chỉ là một showroom, mà là một "trạm trung chuyển" toàn diện. Nơi đây cung cấp dữ liệu thực từ hơn 90% các nhà sản xuất xe danh tiếng thế giới. Từ thông số kỹ thuật chi tiết, tính năng an toàn tiêu chuẩn, cho đến các tùy chọn cá nhân hóa (Options) và mức giá cập nhật theo thời gian thực.
+                </p>
+                <p class="about-text">
+                    Mọi thứ bạn cần để kiến tạo nên chiếc xe mơ ước đều nằm gọn trong một Bảng điều khiển (Dashboard) thông minh. Bạn có thể dễ dàng so sánh nhiều cấu hình xe và nắm rõ mọi chi phí lăn bánh liên quan mà không cần phải di chuyển đi đâu xa.
+                </p>
+            </div>
+
+            <div class="process-box">
+                <div class="process-title">Quy trình 6 bước đơn giản tại OTO NOW</div>
+                <div class="process-grid">
+                    <div class="process-item">
+                        <div class="process-icon">1</div>
+                        <div class="process-text">Lựa chọn mẫu xe hơi hoặc xe SUV mong muốn.</div>
+                    </div>
+                    <div class="process-item">
+                        <div class="process-icon">2</div>
+                        <div class="process-text">Tùy chọn thêm các gói phụ kiện, tiện ích, bảo vệ sơn.</div>
+                    </div>
+                    <div class="process-item">
+                        <div class="process-icon">3</div>
+                        <div class="process-text">Định giá tức thì cho xe cũ của bạn (Thu cũ đổi mới).</div>
+                    </div>
+                    <div class="process-item">
+                        <div class="process-icon">4</div>
+                        <div class="process-text">Tùy chỉnh linh hoạt các điều khoản tài chính / trả góp.</div>
+                    </div>
+                    <div class="process-item">
+                        <div class="process-icon">5</div>
+                        <div class="process-text">Nhận phê duyệt hồ sơ vay mua xe trước nhanh chóng.</div>
+                    </div>
+                    <div class="process-item">
+                        <div class="process-icon">6</div>
+                        <div class="process-text">Kết nối với chuyên viên tư vấn cao cấp để chốt giao dịch.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="detail-footer-section">
+        <div class="detail-footer-wrapper">
+            <div class="detail-footer-col brand-col">
+                <h4>OTO Now</h4>
+                <p class="detail-brand-desc">Hệ thống kinh doanh xe sang uy tín hàng đầu Việt Nam. Chúng tôi cam kết chất lượng và dịch vụ tốt nhất cho mọi khách hàng.</p>
+            </div>
+            <div class="detail-footer-col">
+                <h4>Hỗ trợ khách hàng</h4>
+                <div class="detail-footer-links">
+                    <a href="#">Trung tâm trợ giúp</a>
+                    <a href="chinh_sach_bao_mat.html">Chính sách bảo mật</a>
+                    <a href="dieu_khoan.html">Điều khoản sử dụng</a>
+                    <a href="#">Quy định thanh toán</a>
+                </div>
+            </div>
+            <div class="detail-footer-col">
+                <h4>Thông tin liên hệ</h4>
+                <div class="detail-footer-links">
+                    <a href="#">Hotline: 1900 1234</a>
+                    <a href="#">Email: sales@otonow.com</a>
+                    <a href="#">Showroom: 123 Lê Văn Lương, Hà Nội</a>
+                </div>
+            </div>
+        </div>
+        <div class="detail-copyright-row">
+            © 2026 OTO Now. All rights reserved. Designed with Neon Theme.
+        </div>
+    </div>
+
+</body>
+</html>

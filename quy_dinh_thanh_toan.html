@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quy định thanh toán - OTO NOW</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #f8fafc; }
+        .payment-page-wrapper { width: 100%; max-width: 1240px; margin: 120px auto 50px auto; padding: 0 20px; font-family: 'Inter', sans-serif; }
+        .breadcrumb { margin-bottom: 15px; text-align: center; }
+        .breadcrumb a { color: #94A3B8; font-size: 13px; text-decoration: none; transition: 0.2s; }
+        .breadcrumb a:hover { color: var(--primary-dark); }
+        .breadcrumb span { color: #0F172A; font-size: 13px; font-weight: 600; }
+        .page-title { font-size: 42px; font-weight: 800; color: #0F172A; margin: 0 0 40px 0; letter-spacing: -1px; text-align: center; }
+        .payment-container { background: #fff; padding: 60px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #E2E8F0; color: #333; }
+        .payment-section { margin-bottom: 50px; }
+        .payment-section:last-child { margin-bottom: 0; }
+        .section-title { font-size: 24px; font-weight: 800; color: #0F172A; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
+        .section-title i { color: var(--primary); background: #000; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .payment-text { font-size: 16px; line-height: 1.8; color: #475569; text-align: justify; margin-bottom: 20px; }
+        .method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 30px; }
+        .method-item { border: 1px solid #E2E8F0; border-radius: 16px; padding: 30px; transition: 0.3s; background: #fff; }
+        .method-item:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .method-icon { font-size: 32px; color: #000; margin-bottom: 20px; }
+        .method-name { font-size: 18px; font-weight: 700; color: #0F172A; margin-bottom: 10px; }
+        .method-desc { font-size: 14px; color: #64748B; line-height: 1.6; }
+        .bank-info-box { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 30px; margin-top: 20px; }
+        .bank-info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #E2E8F0; }
+        .bank-info-row:last-child { border-bottom: none; }
+        .bank-label { color: #64748B; font-size: 14px; font-weight: 500; }
+        .bank-value { color: #0F172A; font-size: 15px; font-weight: 700; }
+        .note-list { list-style: none; padding: 0; }
+        .note-list li { position: relative; padding-left: 30px; margin-bottom: 15px; font-size: 15px; color: #475569; line-height: 1.6; }
+        .note-list li::before { content: "\f058"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; left: 0; top: 2px; color: var(--primary); font-size: 18px; }
+        @media (max-width: 900px) { .method-grid { grid-template-columns: 1fr; } .payment-container { padding: 30px; } }
+    </style>
+</head>
+<body>
+    <script src="/OTO_NOW/header.js"></script>
+
+    <div class="payment-page-wrapper">
+        <div class="breadcrumb">
+            <a href="index.html">Trang chủ</a> / <span>Quy định thanh toán</span>
+        </div>
+        <h1 class="page-title">Quy định thanh toán</h1>
+
+        <div class="payment-container">
+            <div class="payment-section">
+                <div class="section-title"><i class="fas fa-wallet"></i> Phương thức thanh toán</div>
+                <p class="payment-text">Nhằm mang lại sự thuận tiện nhất cho quý khách hàng, OTO NOW áp dụng đa dạng các phương thức thanh toán linh hoạt và an toàn tuyệt đối. Quý khách có thể lựa chọn một trong các hình thức sau:</p>
+                
+                <div class="method-grid">
+                    <div class="method-item">
+                        <div class="method-icon"><i class="fas fa-university"></i></div>
+                        <div class="method-name">Chuyển khoản ngân hàng</div>
+                        <div class="method-desc">Hình thức nhanh chóng và an toàn nhất cho các giao dịch giá trị lớn.</div>
+                    </div>
+                    <div class="method-item">
+                        <div class="method-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="method-name">Tiền mặt tại Showroom</div>
+                        <div class="method-desc">Quý khách có thể thanh toán trực tiếp bằng tiền mặt tại hệ thống Showroom.</div>
+                    </div>
+                    <div class="method-item">
+                        <div class="method-icon"><i class="fas fa-credit-card"></i></div>
+                        <div class="method-name">Trả góp qua ngân hàng</div>
+                        <div class="method-desc">Hỗ trợ vay lên đến 80% giá trị xe với lãi suất ưu đãi.</div>
+                    </div>
+                </div>
+
+                <div class="bank-info-box">
+                    <div style="font-weight: 800; margin-bottom: 20px; font-size: 16px; color: #0F172A;">Thông tin tài khoản chính thức:</div>
+                    <div class="bank-info-row"><span class="bank-label">Tên chủ tài khoản:</span><span class="bank-value">CÔNG TY CỔ PHẦN OTO NOW VIỆT NAM</span></div>
+                    <div class="bank-info-row"><span class="bank-label">Số tài khoản (VND):</span><span class="bank-value">123456789999</span></div>
+                    <div class="bank-info-row"><span class="bank-label">Ngân hàng:</span><span class="bank-value">Vietcombank - Chi nhánh Hội Sở Chính</span></div>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <div class="section-title"><i class="fas fa-hand-holding-usd"></i> Quy định đặt cọc giữ xe</div>
+                <ul class="note-list">
+                    <li>Số tiền đặt cọc tối thiểu là <strong>50.000.000 VNĐ</strong> (Tùy thuộc vào giá trị xe).</li>
+                    <li>Sau khi đặt cọc, OTO NOW sẽ khóa tình trạng xe và không giao dịch với khách hàng khác trong vòng 07 ngày làm việc.</li>
+                    <li>Số tiền đặt cọc sẽ được trừ trực tiếp vào tổng giá trị hợp đồng khi tiến hành thanh toán cuối cùng.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-footer-section">
+        <div class="detail-footer-wrapper">
+            <div class="detail-footer-col brand-col">
+                <h4>OTO Now</h4>
+                <p class="detail-brand-desc">Hệ thống kinh doanh xe sang uy tín hàng đầu Việt Nam. Chúng tôi cam kết chất lượng và dịch vụ tốt nhất cho mọi khách hàng.</p>
+            </div>
+            <div class="detail-footer-col">
+                <h4>Hỗ trợ khách hàng</h4>
+                <div class="detail-footer-links">
+                    <a href="lien_he.html">Trung tâm trợ giúp</a>
+                    <a href="chinh_sach_bao_mat.html">Chính sách bảo mật</a>
+                    <a href="dieu_khoan.html">Điều khoản sử dụng</a>
+                    <a href="quy_dinh_thanh_toan.html">Quy định thanh toán</a>
+                </div>
+            </div>
+            <div class="detail-footer-col">
+                <h4>Thông tin liên hệ</h4>
+                <div class="detail-footer-links">
+                    <a href="#">Hotline: 1900 1234</a>
+                    <a href="#">Email: sales@otonow.com</a>
+                    <a href="#">Showroom: 123 Lê Văn Lương, Hà Nội</a>
+                </div>
+            </div>
+        </div>
+        <div class="detail-copyright-row">© 2026 OTO Now. All rights reserved. Designed with Neon Theme.</div>
+    </div>
+</body>
+</html>

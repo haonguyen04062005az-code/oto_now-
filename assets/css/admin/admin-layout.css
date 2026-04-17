@@ -1,0 +1,80 @@
+/* =========================================
+   [NEW] ADMIN HEADER (THANH CÔNG CỤ TRÊN CÙNG)
+   ========================================= */
+
+.admin-header {
+    height: 70px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    border-bottom: 1px solid #EBEBEB;
+    
+    /* Khóa cứng vị trí (Sticky) */
+    position: sticky; 
+    top: 0;
+    z-index: 90; /* Nằm trên nội dung nhưng dưới Modal */
+    width: 100%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+/* Ô tìm kiếm toàn cục (Bên trái) */
+.search-bar-global {
+    background: #F8F9FA;
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 350px; /* Độ rộng chuẩn */
+    border: 1px solid #E2E8F0;
+    transition: 0.2s;
+}
+.search-bar-global:focus-within {
+    border-color: #007BFF;
+    background: #fff;
+}
+.search-bar-global i { color: #94A3B8; }
+.search-bar-global input {
+    border: none; background: transparent; outline: none;
+    width: 100%; font-size: 14px; color: #334155;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Khu vực User (Bên phải) */
+.header-tools {
+    display: flex; align-items: center; gap: 25px;
+}
+
+/* Chuông thông báo */
+.notif-box {
+    position: relative; cursor: pointer;
+    font-size: 20px; color: #64748B; transition: 0.2s;
+}
+.notif-box:hover { color: #007BFF; }
+.notif-box .dot {
+    position: absolute; top: 0; right: 0;
+    width: 8px; height: 8px; background: #EF4444;
+    border-radius: 50%; border: 2px solid white;
+}
+
+/* Profile Admin */
+.user-profile {
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+}
+.user-text { text-align: right; }
+.user-text .name {
+    display: block; font-weight: 700; font-size: 14px; color: #1E293B;
+}
+.user-text .status {
+    display: block; font-size: 12px; color: #10B981; margin-top: 2px;
+}
+.user-avatar {
+    width: 40px; height: 40px;
+    background: #007BFF; color: white;
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 18px;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+}

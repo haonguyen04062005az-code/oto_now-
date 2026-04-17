@@ -1,0 +1,213 @@
+/* =========================================================
+   USER MANAGEMENT - LIGHT THEME (SYNC WITH DASHBOARD)
+   ========================================================= */
+
+:root {
+    /* --- MÀU SẮC ĐỒNG BỘ --- */
+    --primary: #A1FF14;        /* Neon Green */
+    --primary-dark: #8cde0f;
+    --text-on-neon: #000000;
+    
+    --admin-bg: #EEF2F6;       /* Nền Xám Xanh (Giống Dashboard) */
+    --sidebar-dark: #020817;   /* Nền Sidebar (Giữ nguyên đen) */
+    --white: #ffffff;
+    --border: #E7EAEF;         /* Viền xám nhạt */
+    
+    --text-main: #020817;      /* Chữ chính màu đen */
+    --text-sub: #5D6879;       /* Chữ phụ màu xám */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+/* 1. KHÓA CUỘN CỦA BODY */
+html, body { 
+    height: 100vh;           
+    overflow: hidden;        
+    background-color: var(--admin-bg);
+    color: var(--text-main); /* Chữ mặc định màu đen */
+}
+
+/* 2. KHUNG BAO NGOÀI */
+.app-container, body {
+    display: flex;
+    width: 100%;
+    height: 100vh;           
+    overflow: hidden;        
+}
+
+/* ================== 3. SIDEBAR (BÊN TRÁI - ĐỨNG YÊN) ================== */
+.admin-sidebar {
+    width: 260px;
+    background-color: var(--sidebar-dark); /* Nền đen */
+    border-right: 1px solid rgba(255,255,255,0.05);
+    display: flex; flex-direction: column;
+    padding: 20px; flex-shrink: 0;
+}
+
+.admin-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 30px; margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.admin-logo img { height: 35px; width: auto; }
+.admin-logo span { font-weight: 800; font-size: 18px; color: var(--primary); letter-spacing: 1px; }
+
+.sidebar-menu { list-style: none; padding: 0; margin: 0; }
+.sidebar-menu li { margin-bottom: 5px; }
+.sidebar-menu a {
+    display: flex; align-items: center; gap: 15px;
+    padding: 12px 15px; color: #94A3B8; text-decoration: none;
+    border-radius: 8px; transition: 0.3s; font-size: 14px; font-weight: 500;
+}
+/* Active & Hover: Nền đen sáng hơn chút, chữ Neon */
+.sidebar-menu a:hover, .sidebar-menu li.active a {
+    background-color: rgba(161, 255, 20, 0.1);
+    color: var(--primary);
+}
+.sidebar-menu i { width: 20px; text-align: center; }
+
+.sidebar-footer { margin-top: auto; }
+.sidebar-footer a { color: #EF4444; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+
+
+/* ================== 4. MAIN CONTENT (BÊN PHẢI) ================== */
+.admin-content {
+    flex: 1; 
+    padding: 30px; 
+    overflow-y: auto;        /* Cuộn nội dung */
+    background-color: var(--admin-bg); /* Nền Sáng */
+}
+
+/* Header */
+.admin-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 30px;
+}
+.admin-header h2 { font-size: 24px; font-weight: 700; color: var(--text-main); margin: 0; }
+
+/* Nút Thêm Mới (Neon) */
+.btn-add-new {
+    background-color: var(--primary); color: #000;
+    border: none; padding: 10px 20px; border-radius: 8px;
+    font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 4px 15px rgba(161, 255, 20, 0.3);
+}
+.btn-add-new:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+
+
+/* ================== 5. BẢNG DỮ LIỆU (LIGHT THEME) ================== */
+.table-container {
+    background-color: var(--white); /* Nền Trắng */
+    border-radius: 12px; 
+    padding: 0; /* Bỏ padding để header bảng sát viền */
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    overflow: hidden;
+}
+
+.user-table { width: 100%; border-collapse: collapse; }
+
+.user-table th { 
+    text-align: left; padding: 16px 24px; 
+    background-color: #F8FAFC; /* Header xám nhạt */
+    color: var(--text-sub); 
+    font-size: 13px; font-weight: 600; text-transform: uppercase; 
+    border-bottom: 1px solid var(--border); 
+}
+
+.user-table td { 
+    padding: 16px 24px; 
+    border-bottom: 1px solid var(--border); 
+    color: var(--text-main); /* Chữ đen */
+    font-size: 14px; vertical-align: middle; 
+}
+
+.user-table tr:last-child td { border-bottom: none; }
+.user-table tr:hover { background-color: #F8FAFC; }
+
+/* User Info & Avatar */
+.user-info { display: flex; align-items: center; gap: 12px; }
+.avatar-circle { width: 35px; height: 35px; background: #3B82F6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; }
+.avatar-circle.sale { background: #10B981; }
+.avatar-circle.editor { background: #F59E0B; }
+
+/* Badges (Nhãn chức vụ) - Màu nền nhạt chữ đậm */
+.role-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+.role-admin { background: #FEE2E2; color: #991B1B; } /* Đỏ nhạt */
+.role-sale { background: #DBEAFE; color: #1E40AF; }  /* Xanh nhạt */
+.role-editor { background: #FEF3C7; color: #92400E; } /* Vàng nhạt */
+
+/* Status Dot */
+.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+.status-dot.online { background-color: #16A34A; box-shadow: 0 0 0 2px #DCFCE7; }
+.status-dot.offline { background-color: #94A3B8; }
+
+/* Buttons Action */
+.btn-icon { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; margin-right: 5px; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; color: var(--text-sub); }
+.btn-icon:hover { background: #F1F5F9; color: var(--text-main); }
+.btn-icon.edit:hover { color: #2563EB; border-color: #2563EB; }
+.btn-icon.delete:hover { color: #DC2626; border-color: #DC2626; }
+
+
+/* ================== 6. MODAL (POPUP - LIGHT THEME) ================== */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+    z-index: 2000;
+    display: none; 
+    align-items: center; justify-content: center;
+}
+
+.modal-box {
+    background: var(--white); /* Nền trắng */
+    width: 450px;
+    border-radius: 12px; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    overflow: hidden;
+    animation: zoomIn 0.2s ease;
+}
+@keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal-header { 
+    padding: 20px 24px; border-bottom: 1px solid var(--border); 
+    display: flex; justify-content: space-between; align-items: center; 
+}
+.modal-header h3 { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-main); }
+.close-modal { font-size: 20px; cursor: pointer; color: var(--text-sub); background: none; border: none; }
+.close-modal:hover { color: #EF4444; }
+
+.modal-body { padding: 24px; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: var(--text-main); }
+
+/* Select Box đẹp */
+.custom-select {
+    width: 100%; height: 45px; 
+    background: #fff; 
+    border: 1px solid var(--border);
+    border-radius: 8px; 
+    color: var(--text-main); 
+    padding: 0 12px; outline: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+.custom-select:focus { border-color: var(--primary-dark); box-shadow: 0 0 0 3px rgba(161, 255, 20, 0.2); }
+
+.modal-footer { 
+    padding: 20px 24px; border-top: 1px solid var(--border); 
+    display: flex; justify-content: flex-end; gap: 12px; 
+    background: #F8FAFC;
+}
+.btn-cancel { 
+    background: white; border: 1px solid var(--border); 
+    color: var(--text-sub); padding: 10px 20px; border-radius: 8px; 
+    cursor: pointer; font-weight: 600; 
+}
+.btn-cancel:hover { background: #F1F5F9; color: var(--text-main); }
+
+.btn-save { 
+    background: var(--primary); border: none; 
+    color: #000; padding: 10px 20px; border-radius: 8px; 
+    font-weight: 700; cursor: pointer; 
+}
+.btn-save:hover { background: var(--primary-dark); }

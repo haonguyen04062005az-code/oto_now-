@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI+Emoji:wght@400&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI Emoji', 'Inter', sans-serif;
+    background-color: #f5f5f5; /* Màu nền nhẹ cho toàn trang */
+    display: flex;
+    justify-content: center;
+}
+
+.main-container {
+    width: 1440px;
+    height: 2226px; /* Chiều cao tổng của thiết kế */
+    position: relative;
+    background: white;
+    overflow: hidden; /* Ẩn phần thừa của container chính */
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* --- HEADER --- */
+.header-glass {
+    width: 1440px; height: 70px; left: 0px; top: 0px; position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+}
+.logo-img { width: 130px; height: 60px; left: 98px; top: 5px; position: absolute; }
+.header-right { position: absolute; right: 50px; top: 0; height: 70px; display: flex; align-items: center; gap: 20px; }
+.lang-switch { font-size: 15px; font-weight: 500; color: #A08888; }
+.menu-btn { width: 100px; height: 70px; position: relative; cursor: pointer; }
+.menu-bg-gray { width: 100%; height: 100%; background: #D2E0E9; }
+.hamburger { width: 20px; height: 2px; background: #555; position: absolute; left: 40px; border-radius: 5px; }
+
+/* --- HERO SECTION (TÌM KIẾM) --- */
+.hero-title {
+    position: absolute; left: 181px; top: 180px;
+    font-size: 60px; color: #0F172A; text-align: center; width: 1078px;
+}
+.hero-desc {
+    position: absolute; left: 413px; top: 276px;
+    font-size: 20px; color: #475569; text-align: center; width: 651px;
+}
+.tag-luxury {
+    position: absolute; left: 624px; top: 135px;
+    width: 229px; height: 40px; background: #DBEAFE; border-radius: 9999px;
+    display: flex; align-items: center; justify-content: center;
+    color: #1D4ED8; font-size: 14px;
+}
+
+/* Thống kê */
+.stats-box { position: absolute; top: 361px; text-align: center; }
+.stats-num { font-size: 24px; color: #2563EB; }
+.stats-label { font-size: 12px; color: #475569; margin-top: 4px; }
+
+/* Thanh tìm kiếm */
+.search-bar-container {
+    position: absolute; left: 26px; top: 477px;
+    width: 1387px; height: 99px;
+    background: white; border: 1px solid #F1F5F9; border-radius: 16px;
+    box-shadow: 0px 10px 15px rgba(0,0,0,0.05);
+    display: flex; align-items: center; justify-content: space-around;
+    padding: 0 20px; box-sizing: border-box;
+}
+.search-input-box {
+    width: 316px; height: 50px; background: #F8FAFC;
+    border: 1px solid #CBD5E1; border-radius: 14px;
+    display: flex; align-items: center; padding-left: 15px; color: #999;
+}
+.filter-box {
+    width: 316px; height: 50px; background: #F1F5F9;
+    border-radius: 14px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; cursor: pointer;
+}
+.btn-search {
+    width: 316px; height: 50px; background: #2563EB;
+    border-radius: 14px; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 500;
+}
+
+/* --- PHẦN XE NỔI BẬT (QUAN TRỌNG: SCROLL NGANG) --- */
+.section-title {
+    position: absolute; left: 28px; top: 610px;
+    font-size: 28px; color: #0F172A;
+}
+.section-desc {
+    position: absolute; left: 28px; top: 655px;
+    font-size: 13px; color: #475569;
+}
+.view-all {
+    position: absolute; right: 50px; top: 630px;
+    color: #2563EB; cursor: pointer; font-weight: 500;
+}
+
+/* KHUNG CHỨA DANH SÁCH XE (CƠ CHẾ KÉO) */
+.flex-scroll-container {
+    position: absolute;
+    left: 28px;
+    top: 690px; /* Vị trí bắt đầu danh sách */
+    width: 1384px; /* Rộng gần hết màn hình */
+    height: 390px; /* Chiều cao đủ chứa card */
+    
+    display: flex; /* Xếp ngang */
+    gap: 24px; /* Khoảng cách giữa các xe */
+    overflow-x: auto; /* Cho phép cuộn ngang */
+    overflow-y: hidden;
+    padding-bottom: 10px; /* Để thanh cuộn (nếu có) không che nội dung */
+    scroll-behavior: smooth;
+    
+    /* Ẩn thanh cuộn mặc định cho đẹp */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+}
+.flex-scroll-container::-webkit-scrollbar { display: none; }
+
+/* TỪNG CHIẾC XE (CARD) */
+.car-card {
+    position: relative;
+    width: 260px;
+    height: 360px;
+    background: white;
+    border: 1px solid #F1F5F9;
+    border-radius: 16px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.05);
+    flex: 0 0 auto; /* KHÔNG CO LẠI, GIỮ NGUYÊN KÍCH THƯỚC ĐỂ KÉO */
+    transition: transform 0.3s ease;
+}
+.car-card:hover { transform: translateY(-5px); box-shadow: 0px 10px 20px rgba(0,0,0,0.1); }
+
+/* Nội dung bên trong Card (Giữ nguyên absolute bên trong để giống thiết kế) */
+.card-img { position: absolute; left: 5px; top: 30px; width: 250px; height: auto; object-fit: contain; }
+.badge-hot {
+    position: absolute; right: 10px; top: 10px;
+    background: linear-gradient(90deg, #F97316 0%, #DC2626 100%);
+    color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px;
+}
+.card-title {
+    position: absolute; top: 195px; left: 15px;
+    font-size: 16px; color: #0F172A; font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 230px;
+}
+.rating-area { position: absolute; top: 220px; left: 15px; display: flex; gap: 5px; font-size: 12px; color: #64748B; }
+.stars { display: flex; gap: 2px; }
+.star-icon { width: 12px; height: 12px; background: #FACC15; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.info-row {
+    position: absolute; top: 245px; left: 15px;
+    display: flex; gap: 10px; color: #475569; font-size: 12px;
+}
+.price-label { position: absolute; top: 285px; left: 15px; color: #475569; font-size: 12px; }
+.price-value { position: absolute; top: 305px; left: 15px; color: #5C8AF0; font-size: 16px; font-weight: 700; }
+.btn-arrow {
+    position: absolute; right: 20px; bottom: 20px;
+    width: 44px; height: 44px; background: #DBEAFE; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; color: #2563EB; font-weight: bold;
+}
+
+/* --- FOOTER --- */
+.footer-container {
+    position: absolute; bottom: 0; left: 0; width: 1440px; height: 300px;
+    border-top: 1px solid #E2E8F0; background: white;
+}
+.footer-col { position: absolute; top: 50px; }
+.footer-col h4 { margin: 0 0 20px 0; font-size: 16px; color: #0F172A; }
+.footer-col p { margin: 0 0 10px 0; font-size: 14px; color: #475569; cursor: pointer; }
+/* --- HÀNG XE THỨ 2: FEATURED VEHICLES --- */
+
+/* 1. Định vị Tiêu đề & Mô tả cho hàng 2 */
+.title-row-2 {
+    position: absolute; left: 28px; top: 1177px;
+    font-size: 28px; color: #0F172A;
+}
+.desc-row-2 {
+    position: absolute; left: 28px; top: 1229px;
+    font-size: 13px; color: #475569;
+}
+.view-all-2 {
+    position: absolute; right: 50px; top: 1205px;
+    color: #2563EB; cursor: pointer; font-weight: 500;
+}
+
+/* 2. Định vị Khung chứa danh sách xe hàng 2 */
+/* Dùng lại class flex-scroll-container để có tính năng kéo ngang, 
+   nhưng thêm class 'list-2' để đẩy nó xuống dưới thấp */
+.flex-scroll-container.list-2 {
+    top: 1270px; /* Vị trí dọc của hàng xe thứ 2 */
+}
+
+/* --- HÀNG XE THỨ 3: NEWEST VEHICLES --- */
+
+/* 1. Định vị Tiêu đề & Mô tả cho hàng 3 */
+.title-row-3 {
+    position: absolute; left: 28px; top: 1917px;
+    font-size: 28px; color: #0F172A;
+}
+.desc-row-3 {
+    position: absolute; left: 28px; top: 1969px;
+    font-size: 13px; color: #475569;
+}
+.view-all-3 {
+    position: absolute; right: 50px; top: 1945px;
+    color: #2563EB; cursor: pointer; font-weight: 500;
+}
+
+/* 2. Định vị Khung chứa danh sách xe hàng 3 */
+.flex-scroll-container.list-3 {
+    top: 2010px; /* Vị trí dọc của hàng xe thứ 3 */
+}
+
+/* --- HÀNG XE THỨ 4: ELECTRIC & FAMILY --- */
+
+/* 1. Định vị Tiêu đề & Mô tả cho hàng 4 */
+.title-row-4 {
+    position: absolute; left: 28px; top: 2657px;
+    font-size: 28px; color: #0F172A;
+}
+.desc-row-4 {
+    position: absolute; left: 28px; top: 2709px;
+    font-size: 13px; color: #475569;
+}
+.view-all-4 {
+    position: absolute; right: 50px; top: 2685px;
+    color: #2563EB; cursor: pointer; font-weight: 500;
+}
+
+/* 2. Định vị Khung chứa danh sách xe hàng 4 */
+.flex-scroll-container.list-4 {
+    top: 2750px; /* Vị trí dọc của hàng xe thứ 4 */

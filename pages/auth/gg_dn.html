@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <style>
+        /* CSS RIÊNG CHO TRANG GOOGLE */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff; /* Nền trắng */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #202124;
+        }
+
+        /* Khung Card ở giữa */
+        .login-card {
+            width: 450px;
+            padding: 48px 40px 36px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        /* Logo Google */
+        .logo {
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin: 0 0 10px 0;
+        }
+
+        .subtext {
+            font-size: 16px;
+            margin-bottom: 40px;
+            color: #202124;
+        }
+
+        /* Ô nhập liệu */
+        .input-wrapper {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border: 2px solid #1a73e8; /* Viền xanh khi bấm vào */
+            padding: 12px 14px; /* Trừ hao viền dày lên */
+        }
+
+        .forgot-link {
+            display: block;
+            text-align: left;
+            color: #1a73e8;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 5px;
+            margin-bottom: 40px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #5f6368;
+            text-align: left;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .info-text a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Khu vực nút bấm cuối */
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .create-acc {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-next {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-next:hover {
+            background-color: #1557b0;
+        }
+
+        /* Footer ngôn ngữ */
+        .footer {
+            margin-top: 20px;
+            width: 450px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #5f6368;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" height="24" class="logo">
+        
+        <h1>Sign in</h1>
+        <p class="subtext">Use your Google Account</p>
+
+        <div class="input-wrapper">
+            <input type="text" id="google-email" placeholder="Enter your email">
+        </div>
+
+        <div class="input-wrapper">
+            <input type="password" id="google-password" placeholder="Enter your password">
+        </div>
+
+        <a href="#" class="forgot-link">Forgot email?</a>
+
+        <p class="info-text">
+            Not your computer? Use Guest mode to sign in privately. <br>
+            <a href="#">Learn more</a>
+        </p>
+
+        <div class="action-row">
+            <a href="#" class="create-acc">Create account</a>
+            <button class="btn-next" onclick="handleGoogleLogin(event)">Next</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span>English (United States) <i class="fa-solid fa-caret-down"></i></span>
+        <div>
+            <span style="margin-left: 20px;">Help</span>
+            <span style="margin-left: 20px;">Privacy</span>
+            <span style="margin-left: 20px;">Terms</span>
+        </div>
+    </div>
+
+    <script>
+        function handleGoogleLogin(event) {
+            event.preventDefault(); // Chặn load lại trang
+
+            const email = document.getElementById('google-email').value.trim();
+            const password = document.getElementById('google-password').value.trim();
+
+            // Kiểm tra xem các field có trống không
+            if (!email || !password) {
+                alert('Vui lòng nhập email và mật khẩu');
+                return;
+            }
+
+            // Kiểm tra định dạng email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Email không hợp lệ');
+                return;
+            }
+
+            // Gửi dữ liệu đến server để xác thực
+            handleGoogleLoginRequest(email, password);
+        }
+
+        function handleGoogleLoginRequest(email, password) {
+            // Gửi request đến login_process.php
+            fetch('../auth/login_process.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password) + '&google_login=true'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Lưu thông tin người dùng vào localStorage
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        name: data.username || email.split('@')[0],
+                        email: email,
+                        role: data.role || 'user',
+                        avatar: (data.username || email.split('@')[0]).charAt(0).toUpperCase(),
+                        id: data.user_id
+                    }));
+
+                    alert('Đăng nhập Google thành công!');
+                    // Chuyển về trang chủ
+                    window.location.href = '../../index.html';
+                } else {
+                    alert('Đăng nhập thất bại: ' + (data.message || 'Thông tin không chính xác'));
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert('Lỗi kết nối đến server');
+            });
+        }
+    </script>

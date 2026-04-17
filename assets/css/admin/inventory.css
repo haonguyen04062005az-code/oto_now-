@@ -1,0 +1,227 @@
+/* =========================================================
+   CLEAN & FIX: ADMIN LAYOUT (FLEXBOX NO-SCROLL BODY)
+   ========================================================= */
+
+:root {
+    /* --- MÀU SẮC --- */
+    --primary: #A1FF14;        /* Neon Green */
+    --primary-dark: #8cde0f;   
+    --text-on-neon: #000000;   
+    
+    --admin-bg: #EEF2F6;       /* Nền Xám Xanh */
+    --sidebar-dark: #020817;   /* Nền Sidebar */
+    --white: #ffffff;
+    --border: #E7EAEF;
+
+    --text-main: #020817;
+    --text-sub: #5D6879;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+/* 1. KHÓA CUỘN CỦA TRÌNH DUYỆT (QUAN TRỌNG) */
+html, body { 
+    height: 100vh;           /* Chiều cao đúng bằng màn hình */
+    overflow: hidden;        /* Cấm cuộn body */
+    background-color: var(--admin-bg) !important;
+}
+
+/* 2. KHUNG BAO NGOÀI (FLEXBOX) */
+.app-container { 
+    display: flex;           /* Xếp Sidebar và Content nằm ngang */
+    width: 100%; 
+    height: 100vh;           /* Chiều cao full màn hình */
+    overflow: hidden;        /* Cấm cuộn khung bao */
+    background-color: var(--admin-bg) !important;
+}
+
+/* ================== 3. SIDEBAR (BÊN TRÁI) ================== */
+.admin-sidebar {
+    width: 260px;
+    background-color: #020817; /* Đen đậm hơn */
+    border-right: 1px solid rgba(255,255,255,0.1);
+    display: flex; flex-direction: column;
+    padding: 20px; flex-shrink: 0;
+}
+
+.admin-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 30px; margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.admin-logo img { height: 35px; width: auto; }
+.admin-logo span { font-weight: 800; font-size: 18px; color: #A1FF14; letter-spacing: 1px; }
+
+.sidebar-menu { list-style: none; padding: 0; margin: 0; }
+.sidebar-menu li { margin-bottom: 5px; }
+.sidebar-menu a {
+    display: flex; align-items: center; gap: 15px;
+    padding: 12px 15px; color: #94A3B8; text-decoration: none;
+    border-radius: 8px; transition: 0.3s; font-size: 14px; font-weight: 500;
+}
+.sidebar-menu a:hover, .sidebar-menu li.active a {
+    background-color: rgba(161, 255, 20, 0.1);
+    color: #A1FF14; /* Màu Neon khi chọn */
+}
+.sidebar-menu i { width: 20px; text-align: center; }
+
+.sidebar-footer { margin-top: auto; }
+.sidebar-footer a { color: #EF4444; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+
+/* ================== 4. MAIN CONTENT (BÊN PHẢI - CUỘN RIÊNG) ================== */
+.main-content { 
+    flex: 1;                 /* Chiếm hết phần còn lại của màn hình */
+    display: flex; 
+    flex-direction: column; 
+    min-width: 0; 
+    background-color: var(--admin-bg) !important; 
+    height: 100%;            /* Cao full màn hình */
+    
+    /* --- [QUAN TRỌNG] CUỘN NỘI DUNG --- */
+    overflow-y: auto;        /* Chỉ cuộn phần nội dung này, Sidebar đứng yên */
+    position: relative;
+}
+
+/* Header dính trên đầu của phần nội dung */
+.top-header { 
+    height: 80px; background: var(--white); 
+    border-bottom: 1px solid var(--border); 
+    display: flex; align-items: center; justify-content: space-between; 
+    padding: 0 32px; 
+    position: sticky; top: 0; z-index: 900; 
+    flex-shrink: 0;
+}
+
+/* Nội dung bên dưới */
+.content-wrapper { 
+    padding: 32px; 
+    background: transparent !important; 
+    flex: 1; /* Để đẩy footer xuống nếu có */
+}
+
+/* Các thành phần CSS khác (Search, Table, Buttons...) giữ nguyên */
+.header-search { display: flex; align-items: center; gap: 10px; color: var(--text-sub); background: #f8fafc; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border); }
+.header-search input { border: none; outline: none; font-size: 14px; background: transparent; width: 250px; }
+.header-right { display: flex; align-items: center; gap: 24px; }
+.notification-bell { position: relative; font-size: 20px; color: var(--text-sub); cursor: pointer; }
+.notification-bell .dot { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid white; }
+.user-profile { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.user-text { text-align: right; }
+.user-name { display: block; font-size: 14px; font-weight: 600; color: var(--text-main); }
+.user-status { font-size: 12px; color: #16A34A; }
+.user-avatar { width: 40px; height: 40px; background: var(--primary) !important; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-on-neon) !important; font-size: 18px; }
+.user-avatar i { color: #000 !important; }
+.top-header i { color: #4d7c0f !important; }
+
+/* Nút & Bảng */
+.btn-primary, .btn-save, .btn-save-custom { background: var(--primary) !important; color: var(--text-on-neon) !important; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 700 !important; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(161, 255, 20, 0.3) !important; }
+.btn-primary:hover, .btn-save:hover, .btn-save-custom:hover { background: var(--primary-dark) !important; }
+.btn-secondary { background: white; border: 1px solid var(--border); padding: 10px 20px; border-radius: 8px; margin-right: 10px; cursor: pointer; font-weight: 600; color: var(--text-sub); display: inline-flex; align-items: center; gap: 8px; }
+.table-wrapper { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+.inventory-table { width: 100%; border-collapse: collapse; }
+.inventory-table th { background: #f8fafc; padding: 16px 24px; text-align: left; font-size: 13px; font-weight: 600; color: var(--text-sub); border-bottom: 1px solid var(--border); text-transform: uppercase; }
+.inventory-table td { padding: 16px 24px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text-main); font-size: 14px; }
+.inventory-table tr:hover { background-color: #f8fafc; }
+.id-text { color: var(--text-sub); font-size: 12px; margin-top: 4px; display: block; }
+.badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+
+/* --- [ĐÃ SỬA] NÚT THAO TÁC (XÓA MÀU ĐỎ) --- */
+.action-btns button { 
+    background: white; border: 1px solid var(--border); 
+    width: 32px; height: 32px; border-radius: 6px; 
+    cursor: pointer; font-size: 14px; margin-left: 8px; 
+    transition: 0.2s; display: inline-flex; 
+    align-items: center; justify-content: center; 
+}
+/* Nút Sửa (Bút chì) */
+.action-btns button.edit i { color: #4d7c0f !important; }
+.action-btns button.edit:hover { background: #f8fafc; border-color: var(--primary); }
+.action-btns button.edit:hover i { color: var(--primary-dark) !important; }
+/* Nút Xóa (Thùng rác) */
+.action-btns button.delete i { color: #EF4444 !important; } 
+.action-btns button.delete:hover { background: #FEE2E2; border-color: #EF4444; } 
+.action-btns button.delete:hover i { color: #DC2626 !important; } 
+
+
+/* Stats & Modal (Giữ nguyên) */
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.page-header h1 { font-size: 24px; font-weight: 700; color: var(--text-main); margin: 0; }
+.page-header p { color: var(--text-sub); font-size: 14px; margin-top: 5px; }
+.stats-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 30px; }
+.stat-card { padding: 24px; border-radius: 12px; border: 1px solid transparent; background: white; }
+.stat-card h2 { font-size: 28px; font-weight: 700; margin: 5px 0; color: #4d7c0f !important; }
+.stat-card span { font-size: 14px; color: var(--text-sub); font-weight: 600; }
+.stat-card.blue { background: #F0F9FF; border-color: #BAE6FD; } 
+.stat-card.green { background: #F0FDF4; border-color: #BBF7D0; } 
+.stat-card.purple { background: #FAF5FF; border-color: #E9D5FF; } 
+
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
+.modal-content-custom { background: white; width: 550px; padding: 30px; border-radius: 16px; animation: slideDown 0.3s ease; }
+@keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header-custom { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+.modal-header-custom h3 { margin: 0; font-size: 20px; font-weight: 700; }
+.close-btn-custom { border: none; background: none; font-size: 24px; cursor: pointer; color: var(--text-sub); }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+.form-group input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+.form-row { display: flex; gap: 15px; } .form-group.half { width: 50%; }
+.modal-footer-custom { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px; }
+.btn-cancel-custom { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border); background: white; color: var(--text-sub); cursor: pointer; font-weight: 600; }
+.upload-trigger { border: 2px dashed #cbd5e1; border-radius: 8px; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-sub); cursor: pointer; }
+#fileInput { display: none; }
+/* --- ÉP MÀU NÚT XÓA THÀNH ĐỎ (BỎ Ở CUỐI FILE) --- */
+html body .table-wrapper .action-btns button.delete i.fas.fa-trash {
+    color: #EF4444 !important; /* Đỏ tươi */
+}
+
+html body .table-wrapper .action-btns button.delete {
+    border-color: #fca5a5 !important;
+}
+
+html body .table-wrapper .action-btns button.delete:hover {
+    background-color: #FEE2E2 !important; /* Nền đỏ nhạt */
+    border-color: #EF4444 !important;
+}
+
+html body .table-wrapper .action-btns button.delete:hover i.fas.fa-trash {
+    color: #B91C1C !important; /* Đỏ đậm khi di chuột */
+}
+/* --- STYLE CHO BỘ CHỌN SỐ LƯỢNG (QTY GROUP) --- */
+.qty-group {
+    display: inline-flex;
+    align-items: center;
+    background: #F8FAFC; /* Nền xám nhạt */
+    border: 1px solid var(--border); /* Viền đồng bộ với bảng */
+    border-radius: 8px; /* Bo góc mềm mại */
+    overflow: hidden;
+    height: 34px; /* Chiều cao cân đối với dòng */
+}
+
+.qty-group button {
+    background: transparent;
+    border: none;
+    width: 32px;
+    height: 100%;
+    color: var(--text-sub);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+
+.qty-group button:hover {
+    background: #E2E8F0; /* Nền đậm hơn chút khi di chuột vào */
+    color: var(--primary-dark); /* Đổi màu xanh Neon đậm */
+}
+
+.qty-group span {
+    width: 30px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-main);
+    user-select: none; /* Tránh bôi đen nhầm văn bản */
+}

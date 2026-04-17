@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đánh giá - AutoAdmin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/admin/orders.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="../../assets/image/logo.png" alt="Logo">
+                <span>ADMIN</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Tổng quan</a></li>
+                <li><a href="inventory.php"><i class="fas fa-car"></i> Kho xe</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Đơn hàng</a></li>
+                <li class="active"><a href="danh_gia.html"><i class="fas fa-star"></i> Đánh giá</a></li>
+                <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Thống kê</a></li>
+                <li><a href="users.html"><i class="fas fa-users"></i> Nhân viên</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="../../../OTO_NOW/"><i class="fas fa-sign-out-alt"></i> Quay về Web</a>
+            </div>
+        </div>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Tìm kiếm đánh giá, người dùng...">
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i><span class="dot"></span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-text">
+                            <span class="user-name">Admin User</span>
+                            <span class="user-status">Đang hoạt động</span>
+                        </div>
+                        <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <div>
+                        <h1>Quản lý Đánh giá & Nhận xét</h1>
+                        <p>Xem, kiểm duyệt và quản lý các phản hồi từ khách hàng.</p>
+                    </div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="mini-stat">
+                        <div><h3>4.9 <span style="font-size: 16px; color: #F59E0B;"><i class="fas fa-star"></i></span></h3><span>Điểm trung bình</span></div>
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="mini-stat">
+                        <div><h3>1,284</h3><span>Tổng số đánh giá</span></div>
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="mini-stat">
+                        <div><h3 style="color: #D97706;">24</h3><span>Chờ kiểm duyệt</span></div>
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+
+                <div class="filters-bar">
+                    <i class="fas fa-filter" style="color: #5D6879;"></i>
+                    <select class="filter-select">
+                        <option>Tất cả trạng thái</option>
+                        <option>Đã duyệt</option>
+                        <option>Chờ duyệt</option>
+                        <option>Đã ẩn</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Tất cả số sao</option>
+                        <option>5 Sao</option>
+                        <option>4 Sao</option>
+                        <option>3 Sao trở xuống</option>
+                    </select>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Khách hàng</th>
+                                <th>Sản phẩm (Xe)</th>
+                                <th>Nội dung đánh giá</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày đăng</th>
+                                <th style="text-align: right;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Hoàng Trần</strong><br><small style="color:#888">hoang.t@gmail.com</small></td>
+                                <td>Alfa Romeo Giulia</td>
+                                <td>
+                                    <div class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                                    <span class="review-text-snippet">Xe tuyệt vời, thiết kế sang trọng và cảm giác lái rất bốc...</span>
+                                </td>
+                                <td><span class="badge completed">Đã duyệt</span></td>
+                                <td>12/10/2025</td>
+                                <td style="text-align: right; min-width: 130px;">
+                                    <button class="action-icon" onclick="viewReviewDetails('REV-001')" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                    <button class="action-icon reject" title="Ẩn đánh giá này"><i class="fas fa-eye-slash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lê Khang</strong><br><small style="color:#888">khangle99@yahoo.com</small></td>
+                                <td>Audi A6 S-Line</td>
+                                <td>
+                                    <div class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
+                                    <span class="review-text-snippet">Nội thất rộng rãi, tiện nghi. Giao xe đúng hẹn. Tuy nhiên...</span>
+                                </td>
+                                <td><span class="badge pending">Chờ duyệt</span></td>
+                                <td>11/10/2025</td>
+                                <td style="text-align: right; min-width: 130px;">
+                                    <button class="action-icon approve" title="Duyệt đánh giá"><i class="fas fa-check"></i></button>
+                                    <button class="action-icon" onclick="viewReviewDetails('REV-002')" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                    <button class="action-icon reject" title="Xóa đánh giá"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tài khoản ẩn danh</strong><br><small style="color:#888">spam_bot@spam.com</small></td>
+                                <td>Ford Mustang</td>
+                                <td>
+                                    <div class="star-rating"><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></div>
+                                    <span class="review-text-snippet">Giá quá đắt, dịch vụ tồi tệ blablabla quảng cáo rác...</span>
+                                </td>
+                                <td><span class="badge cancelled">Đã ẩn (Spam)</span></td>
+                                <td>10/10/2025</td>
+                                <td style="text-align: right; min-width: 130px;">
+                                    <button class="action-icon" onclick="viewReviewDetails('REV-003')" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="reviewModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chi tiết Đánh giá</h2>
+                <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="modal-body" style="grid-template-columns: 1fr;"> <div class="info-section" style="margin-bottom: 0;">
+                    <h3><i class="fas fa-quote-left"></i> Nội dung chi tiết</h3>
+                    <div style="background: #F8FAFC; padding: 20px; border-radius: 12px; border: 1px solid #E2E8F0; margin-top: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <div>
+                                <strong id="modal-rev-name" style="font-size: 16px; color: #0F172A;">Loading...</strong>
+                                <div id="modal-rev-email" style="font-size: 13px; color: #64748B;"></div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div id="modal-rev-stars" class="star-rating" style="font-size: 16px; margin-bottom: 5px;"></div>
+                                <span class="badge" id="modal-rev-status"></span>
+                            </div>
+                        </div>
+                        <div style="font-size: 14px; color: #0F172A; margin-bottom: 10px;"><strong>Sản phẩm:</strong> <span id="modal-rev-car"></span></div>
+                        <div style="border-top: 1px dashed #CBD5E1; margin: 15px 0;"></div>
+                        <p id="modal-rev-content" style="color: #334155; line-height: 1.6; font-size: 15px;">
+                            Loading content...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: flex; justify-content: space-between;">
+                <div>
+                    <button class="btn-close-modal" style="background: #EF4444; color: white;" onclick="closeModal()"><i class="fas fa-trash"></i> Xóa</button>
+                    <button class="btn-close-modal" style="background: #16A34A; color: white;" onclick="closeModal()"><i class="fas fa-check"></i> Duyệt</button>
+                </div>
+                <button class="btn-close-modal" onclick="closeModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const reviewData = {
+            "REV-001": {
+                name: "Hoàng Trần", email: "hoang.t@gmail.com", car: "Alfa Romeo Giulia",
+                stars: 5, status: "Đã duyệt", statusClass: "completed",
+                content: "Xe tuyệt vời, thiết kế sang trọng và cảm giác lái rất bốc. Đội ngũ OTO NOW tư vấn rất nhiệt tình, thủ tục nhanh gọn! Sẽ giới thiệu cho bạn bè."
+            },
+            "REV-002": {
+                name: "Lê Khang", email: "khangle99@yahoo.com", car: "Audi A6 S-Line",
+                stars: 4, status: "Chờ duyệt", statusClass: "pending",
+                content: "Nội thất rộng rãi, tiện nghi. Giao xe đúng hẹn. Tuy nhiên màn hình giải trí hơi khó làm quen lúc đầu, mất một ngày để quen. Nhìn chung rất hài lòng."
+            },
+            "REV-003": {
+                name: "Tài khoản ẩn danh", email: "spam_bot@spam.com", car: "Ford Mustang",
+                stars: 1, status: "Đã ẩn", statusClass: "cancelled",
+                content: "Giá quá đắt, dịch vụ tồi tệ blablabla quảng cáo rác. Đừng mua xe ở đây mọi người ơi, qua bên showroom ABC mua rẻ hơn nhiều nhé."
+            }
+        };
+
+        function viewReviewDetails(revId) {
+            const data = reviewData[revId];
+            if (!data) return;
+
+            document.getElementById('modal-rev-name').innerText = data.name;
+            document.getElementById('modal-rev-email').innerText = data.email;
+            document.getElementById('modal-rev-car').innerText = data.car;
+            document.getElementById('modal-rev-content').innerText = data.content;
+
+            // Render Stars
+            let starsHtml = '';
+            for(let i=0; i<5; i++) {
+                if(i < data.stars) starsHtml += '<i class="fas fa-star"></i>';
+                else starsHtml += '<i class="far fa-star"></i>';
+            }
+            document.getElementById('modal-rev-stars').innerHTML = starsHtml;
+
+            // Render Badge
+            const statusBadge = document.getElementById('modal-rev-status');
+            statusBadge.className = 'badge ' + data.statusClass;
+            statusBadge.innerText = data.status;
+
+            document.getElementById('reviewModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('reviewModal').classList.remove('show');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('reviewModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

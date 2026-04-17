@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quên mật khẩu - OTONOW</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+        <a href="../../index.html">
+            <img class="logo-img" src="../../assets/image/logo.png" alt="OTONOW">
+        </a>
+    </div>
+        <div class="header-tools">
+            <i class="fa-solid fa-magnifying-glass"></i> 
+            <span style="margin: 0 10px">EN / DE</span>
+            <div class="menu-btn"><i class="fa-solid fa-bars"></i></div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="form-wrapper">
+                <h1>Quên mật khẩu?</h1>
+                <p class="subtitle">Đừng lo! Nhập email để nhận mã xác thực.</p>
+
+                <form id="forgotForm">
+                    <div class="input-group">
+                        <label for="email">Email đăng ký</label>
+                        <input type="email" id="email" placeholder="Nhập email của bạn">
+                        <span class="error-msg" id="email-error"></span>
+                    </div>
+
+                    <button type="submit" class="btn-login">Gửi mã OTP</button>
+                </form>
+
+                <p class="register-link">
+                    Trở lại <a href="GD_dangnhap.html">Đăng nhập</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="testimonial-box">
+                <p class="quote" id="t-quote">“In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document...”</p>
+                
+                <div class="box-footer">
+                    <div class="author-info">
+                        <h3 id="t-author">Sam Kolder</h3>
+                        <p id="t-location">Los Angeles, California, USA</p>
+                    </div>
+
+                    <div class="right-actions">
+                        <div class="rating" id="t-rating">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        
+                        <div class="nav-arrows">
+                            <button class="circle-btn" id="btn-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="circle-btn" id="btn-next"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="../../assets/js/slider.js"></script>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('email');
+            const emailMsg = document.getElementById('email-error');
+            const submitBtn = document.querySelector('.btn-login');
+
+            emailInput.classList.remove('error');
+            emailMsg.innerText = "";
+            emailMsg.classList.remove('show');
+
+            const emailVal = emailInput.value.trim();
+            if (!emailVal) {
+                emailInput.classList.add('error');
+                emailMsg.innerText = "Vui lòng nhập email!";
+                emailMsg.classList.add('show');
+                return;
+            }
+
+            submitBtn.innerText = "Đang gửi...";
+            submitBtn.disabled = true;
+
+            fetch('send_otp.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ email: emailVal })
+            })
+            .then(res => res.json())
+            .then(data => {
+                submitBtn.innerText = 'Gửi mã OTP';
+                submitBtn.disabled = false;
+                if (data.status === 'success') {
+                    alert('Mã OTP đã gửi thành công. Mã test: ' + data.test_otp);
+                    window.location.href = 'Xacthuc_OTP.html';
+                } else {
+                    emailInput.classList.add('error');
+                    emailMsg.innerText = data.message || 'Không thể gửi OTP. Vui lòng thử lại.';
+                    emailMsg.classList.add('show');
+                }
+            })
+            .catch(() => {
+                submitBtn.innerText = 'Gửi mã OTP';
+                submitBtn.disabled = false;
+                emailInput.classList.add('error');
+                emailMsg.innerText = 'Lỗi kết nối máy chủ. Vui lòng thử lại!';
+                emailMsg.classList.add('show');
+            });
+        });
+    </script>
+</body>
+</html>

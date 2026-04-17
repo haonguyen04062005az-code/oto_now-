@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý nhân viên - AutoAdmin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../assets/css/admin/admin.css"> 
+    
+    <style>
+        /* Thêm màu phụ cho chức vụ Biên tập viên (nếu CSS gốc của bạn chưa có) */
+        .role-editor { background: #FEF08A; color: #166534; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-sidebar">
+        <div class="admin-logo">
+            <img src="../../assets/image/logo.png" alt="Logo">
+            <span>ADMIN</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Tổng quan</a></li>
+            <li><a href="inventory.php"><i class="fas fa-car"></i> Kho xe</a></li>
+            <li><a href="orders.html"><i class="fas fa-shopping-cart"></i> Đơn hàng</a></li>
+            <li><a href="danh_gia.html"><i class="fas fa-star"></i> Đánh giá</a></li>
+            <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Thống kê</a></li>
+            <li class="active"><a href="#"><i class="fas fa-users"></i> Nhân viên</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="../../../OTO_NOW/"><i class="fas fa-sign-out-alt"></i> Quay về Web</a>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <div class="admin-header">
+            <h2>Quản lý phân quyền</h2>
+            <button class="btn-add-new"><i class="fas fa-plus"></i> Thêm mới</button>
+        </div>
+
+        <div class="table-container">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nhân viên</th>
+                        <th>Email</th>
+                        <th>Chức vụ</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#001</td>
+                        <td><div class="user-info"><div class="avatar-circle">A</div><span>Nguyễn Văn A</span></div></td>
+                        <td>admin@otonow.com</td>
+                        <td id="role-cell-1"><span class="role-badge role-admin">Quản trị viên</span></td>
+                        <td><span class="status-dot online"></span> Hoạt động</td>
+                        <td>
+                            <button id="edit-btn-1" class="btn-icon edit" onclick="openModal(1, 'Nguyễn Văn A', 'admin')"><i class="fas fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>#002</td>
+                        <td><div class="user-info"><div class="avatar-circle sale">B</div><span>Trần Thị B</span></div></td>
+                        <td>sale@otonow.com</td>
+                        <td id="role-cell-2"><span class="role-badge role-sale">Sale</span></td>
+                        <td><span class="status-dot online"></span> Hoạt động</td>
+                        <td>
+                            <button id="edit-btn-2" class="btn-icon edit" onclick="openModal(2, 'Trần Thị B', 'sale')"><i class="fas fa-pen"></i></button>
+                            <button class="btn-icon delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="roleModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Phân quyền tài khoản</h3>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Nhân viên: <strong id="modalUserName" style="color: #A1FF14;">---</strong></p>
+                <div class="form-group">
+                    <label>Chức vụ:</label>
+                    <select id="roleSelect" class="custom-select">
+                        <option value="admin">Quản trị viên (Admin)</option>
+                        <option value="sale">Nhân viên Sale</option>
+                        <option value="editor">Biên tập viên</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+                <button id="btn-save-role" class="btn-save" onclick="saveRole()">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('roleModal');
+        const userNameSpan = document.getElementById('modalUserName');
+        const roleSelect = document.getElementById('roleSelect');
+        
+        let currentEditUserId = null; 
+
+        function openModal(id, name, role) { 
+            currentEditUserId = id; 
+            userNameSpan.innerText = name; 
+            roleSelect.value = role; 
+            modal.style.display = 'flex'; 
+        }
+
+        function closeModal() { 
+            modal.style.display = 'none'; 
+        }
+        
+        window.onclick = function(e) { 
+            if(e.target == modal) closeModal(); 
+        }
+
+        // ================= HÀM XỬ LÝ LƯU PHÂN QUYỀN (TRỰC TIẾP TRÊN GIAO DIỆN) =================
+        function saveRole() {
+            if (!currentEditUserId) return;
+
+            const newRole = roleSelect.value;
+            const btnSave = document.getElementById('btn-save-role');
+            const originalText = btnSave.innerHTML;
+
+            // Đổi nút thành Loading
+            btnSave.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+            btnSave.style.pointerEvents = 'none';
+
+            // Giả lập thời gian load 0.5s cho giống hệ thống thật
+            setTimeout(() => {
+                
+                // 1. Tự động dịch "mã quyền" thành "tên hiển thị" và "màu sắc"
+                const roleDictionary = {
+                    'admin':  { text: 'Quản trị viên', badgeClass: 'role-admin' },
+                    'sale':   { text: 'Sale',          badgeClass: 'role-sale' },
+                    'editor': { text: 'Biên tập viên', badgeClass: 'role-editor' }
+                };
+
+                const selectedRoleInfo = roleDictionary[newRole];
+
+                // 2. Tìm đúng ô Chức vụ của nhân viên đó trên bảng và thay áo mới
+                const roleCell = document.getElementById('role-cell-' + currentEditUserId);
+                if (roleCell) {
+                    roleCell.innerHTML = `<span class="role-badge ${selectedRoleInfo.badgeClass}">${selectedRoleInfo.text}</span>`;
+                }
+
+                // 3. Cập nhật lại bộ nhớ của nút Sửa (để lần sau bấm vào nó hiện đúng chức vụ vừa chọn)
+                const editBtn = document.getElementById('edit-btn-' + currentEditUserId);
+                if (editBtn) {
+                    const currentName = userNameSpan.innerText;
+                    editBtn.setAttribute('onclick', `openModal(${currentEditUserId}, '${currentName}', '${newRole}')`);
+                }
+
+                // Hoàn tất, đóng cửa sổ
+                closeModal();
+                
+                // Trả nút về bình thường
+                btnSave.innerHTML = originalText;
+                btnSave.style.pointerEvents = 'auto';
+
+            }, 500); // Trễ 0.5s
+        }
+    </script>
+</body>
+</html>

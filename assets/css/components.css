@@ -1,0 +1,160 @@
+/* --- 3. CÁC THÀNH PHẦN (COMPONENTS) --- */
+
+/* INPUT FIELDS (Gạch chân) */
+.input-group {
+    margin-bottom: 25px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1px solid #ddd; /* Chỉ có viền dưới */
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-bottom: 1px solid #000; /* Đậm lên khi click vào */
+}
+
+/* BUTTONS */
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    background: rgb(161, 255, 20); /* Màu xanh pastel */
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: 0.2s;
+}
+
+.btn-login:hover { background: #D2E0E9; }
+
+.btn-google {
+    width: 100%;
+    padding: 14px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-google:hover { background: #f9f9f9; }
+
+/* CHECKBOX & LINKS */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 30px;
+    color: #555;
+}
+.forgot-pass { font-weight: 600; color: #111; }
+.register-link { text-align: center; margin-top: 20px; color: #666; font-size: 14px; }
+.register-link a { font-weight: 600; color: #111; }
+
+/* TESTIMONIAL BOX (Hiệu ứng kính mờ) */
+.testimonial-box {
+    background: rgba(0, 0, 0, 0.6); /* Màu đen trong suốt 60% */
+    backdrop-filter: blur(10px);     /* Làm mờ hậu cảnh */
+    -webkit-backdrop-filter: blur(10px); /* Hỗ trợ Safari */
+    padding: 40px;
+    border-radius: 12px;
+    color: white;
+    width: 100%;
+    max-width: 600px;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Viền sáng mờ */
+}
+
+.quote {
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    font-size: 12px;
+    opacity: 0.95;
+    font-weight: 300;
+}
+
+.author-info h3 { font-size: 14px; margin-bottom: 5px; color: #fff; }
+.author-info p { font-size: 8px; opacity: 0.7; color: #ddd; }
+
+.box-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+.right-actions { text-align: right; }
+.rating { color: #fff; font-size: 12px; margin-bottom: 10px; }
+
+/* Nút mũi tên tròn */
+.nav-arrows { display: flex; gap: 10px; justify-content: flex-end; }
+.circle-btn {
+    width: 35px; height: 35px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.3s;
+}
+.circle-btn:hover { background: rgba(255,255,255,0.3); }
+/* --- HIỆU ỨNG BÁO LỖI (ERROR STATE) --- */
+
+/* 1. Viền đỏ khi lỗi */
+.input-group input.error {
+    border-bottom: 2px solid #dc3545 !important; /* Màu đỏ đậm */
+    color: #dc3545;
+}
+
+/* 2. Dòng chữ thông báo lỗi nhỏ bên dưới */
+.error-msg {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 6px;
+    display: none; /* Mặc định ẩn đi */
+    font-weight: 500;
+}
+
+/* Khi có class show thì hiện lên */
+.error-msg.show {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Hiệu ứng hiện dần */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* --- Animation cho Slider --- */
+.fade-anim {
+    animation: fadeInEffect 0.6s ease-in-out;
+}
+
+@keyframes fadeInEffect {
+    from {
+        opacity: 0.4;
+        transform: translateY(5px); /* Trượt nhẹ từ dưới lên */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

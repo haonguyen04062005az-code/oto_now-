@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoPay - Home & Listings</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+       <style>
+        /* ================= CSS CHUẨN: LƯỚI XEM TẤT CẢ VÀ CANH GIỮA ================= */
+        .slider-wrapper.expanded { 
+            overflow: visible !important; 
+            height: auto !important; 
+            padding-bottom: 60px !important; 
+            width: 100% !important;
+            display: block !important;
+        }
+        .slider-wrapper.expanded .nav-btn { display: none !important; }
+        
+        .slider-list.expanded-grid {
+            display: flex !important; 
+            flex-wrap: wrap !important;
+            justify-content: center !important; 
+            align-items: flex-start !important;
+            gap: 25px !important;
+            transform: translateX(0) !important; 
+            transition: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 20px 0 !important;
+            margin: 0 auto !important;
+            box-sizing: border-box !important;
+        }
+        
+        .slider-list.expanded-grid .car-card {
+            width: 275px !important; 
+            max-width: 275px !important;
+            min-width: 275px !important;
+            flex: 0 0 275px !important;
+            margin: 0 !important;
+            position: relative !important;
+        }
+
+        .view-all:hover { color: #16A34A !important; cursor: pointer; }
+
+        /* ================= CHẾ ĐỘ FOCUS (ẨN CÁC PHẦN KHÁC) ================= */
+        body.focus-mode .home-container,
+        body.focus-mode .search-bar-container,
+        body.focus-mode .tag-luxury,
+        body.focus-mode .hero-title,
+        body.focus-mode .hero-desc,
+        body.focus-mode .stats-wrapper,
+        body.focus-mode .faq-news-container,
+        body.focus-mode .section-header,
+        body.focus-mode .slider-wrapper {
+            display: none !important;
+        }
+
+        body.focus-mode .white-bg-wrapper {
+            padding-top: 100px !important; 
+            min-height: 100vh;
+        }
+
+        body.focus-mode .section-header.active-focus {
+            display: flex !important; 
+        }
+        body.focus-mode .slider-wrapper.expanded {
+            display: block !important; 
+        }
+    </style>
+</head>
+<body>
+    <script src="/OTO_NOW/header.js"></script>
+
+    <div class="home-container">
+        <video autoplay muted loop playsinline class="banner-video-bg">
+            <source src="assets/video/VD.mp4" type="video/mp4">
+        </video>
+        <div class="banner-overlay"></div>
+
+        <div class="home-content-static center-layout">
+            <div class="text-carousel-wrapper">
+                <div class="dynamic-text-item active">
+                    <h1 class="home-headline">Hoàn toàn mê mẩn với bộ bánh xe mới</h1>
+                    <p class="text-lorem">Thiết kế khí động học đỉnh cao kết hợp với hiệu suất vượt trội. Một kiệt tác công nghệ dành cho người đam mê tốc độ.</p>
+                </div>
+                <div class="dynamic-text-item">
+                    <h1 class="home-headline">Sang trọng định nghĩa lại đẳng cấp</h1>
+                    <p class="text-lorem">Trải nghiệm sự thoải mái tối thượng trong khoang nội thất được chế tác thủ công tinh xảo, tiện nghi bậc nhất.</p>
+                </div>
+                <div class="dynamic-text-item">
+                    <h1 class="home-headline">Công nghệ tương lai trong tầm tay</h1>
+                    <p class="text-lorem">Hệ thống lái tự động tiên tiến và kết nối thông minh giúp mọi hành trình trở nên an toàn và thú vị hơn bao giờ hết.</p>
+                </div>
+            </div>
+            <div class="banner-btn-group">
+                <div class="select-btn-box btn-outline" onclick="document.getElementById('start-listing').scrollIntoView({behavior: 'smooth'})">
+                    <span class="select-btn-text text-white">Khám Phá Ngay</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="white-bg-wrapper">
+        <div class="listings-container" id="start-listing">
+           <div class="listing-inner-wrapper">
+            
+                <div class="search-bar-container">
+                    <div class="search-input-box">
+                        <input type="text" id="searchInput" placeholder="Tìm theo tên xe..." />
+                    </div>
+                    
+                    <div class="filter-box">
+                        <select id="brandSelect">
+                            <option value="all">Tất cả hãng xe</option>
+                            <option value="alfa-romeo">Alfa Romeo</option>
+                            <option value="audi">Audi</option>
+                            <option value="bmw">BMW</option>
+                            <option value="ferrari">Ferrari</option>
+                            <option value="ford">Ford</option>
+                            <option value="lamborghini">Lamborghini</option>
+                            <option value="land-rover">Land Rover</option>
+                            <option value="nissan">Nissan</option>
+                            <option value="vinfast">VinFast</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-box">
+                        <select id="priceSelect">
+                            <option value="all">Tất cả các mức giá</option>
+                            <option value="under500">Dưới 500 triệu</option>
+                            <option value="500-1000">500 triệu - 1 tỷ</option>
+                            <option value="1000-2000">1 tỷ - 2 tỷ</option>
+                            <option value="2000-5000">2 tỷ - 5 tỷ</option>
+                            <option value="above5000">Trên 5 tỷ</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-box">
+                        <select id="fuelSelect">
+                            <option value="all">Tất cả nhiên liệu</option>
+                            <option value="petrol">Xe Xăng</option>
+                            <option value="diesel">Xe Dầu</option>
+                            <option value="electric">Xe Điện (EV)</option>
+                            <option value="hybrid">Xe Hybrid</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn-search" onclick="filterCars()">Tìm kiếm</button>
+                </div>
+
+                <div class="section-header">
+                    <div>
+                        <div class="section-title">Xe nổi bật</div>
+                        <div class="section-desc">Những chiếc xe cao cấp được tuyển chọn dành cho những người mua khó tính</div>
+                    </div>
+                    <div class="view-all" style="cursor: pointer;" onclick="toggleViewAll('carList', this)">Xem tất cả →</div>
+                </div>
+
+                <div class="slider-wrapper">
+                    <button class="nav-btn prev-btn" onclick="moveCar('prev', 'carList')">❮</button>
+                    <div class="slider-list" id="carList"></div>
+                    <button class="nav-btn next-btn" onclick="moveCar('next', 'carList')">❯</button>
+                </div>
+
+                <div class="section-header">
+                    <div>
+                        <div class="section-title title-row-2">Các xe bán chạy</div>
+                        <div class="section-desc desc-row-2">Xe hơi cao cấp tuyển chọn kỹ lưỡng dành cho khách hàng tinh tế</div>
+                    </div>
+                    <div class="view-all view-all-2" style="cursor: pointer;" onclick="toggleViewAll('carList2', this)">Xem tất cả →</div>
+                </div>
+
+                <div class="slider-wrapper pos-2">
+                    <button class="nav-btn prev-btn" onclick="moveCar('prev', 'carList2')">❮</button>
+                    <div class="slider-list" id="carList2"></div>
+                    <button class="nav-btn next-btn" onclick="moveCar('next', 'carList2')">❯</button>
+                </div>
+
+                <div class="section-header">
+                    <div>
+                        <div class="section-title title-row-3">Xe mới nhất</div>
+                        <div class="section-desc desc-row-3">Những mẫu xe mới nhất vừa có mặt tại hệ thống showroom</div>
+                    </div>
+                    <div class="view-all view-all-3" style="cursor: pointer;" onclick="toggleViewAll('carList3', this)">Xem tất cả →</div>
+                </div>
+
+                <div class="slider-wrapper pos-3">
+                    <button class="nav-btn prev-btn" onclick="moveCar('prev', 'carList3')">❮</button>
+                    <div class="slider-list" id="carList3"></div>
+                    <button class="nav-btn next-btn" onclick="moveCar('next', 'carList3')">❯</button>
+                </div>
+
+                <div class="section-header">
+                    <div>
+                        <div class="section-title title-row-4">Xe điện & Gia đình</div>
+                        <div class="section-desc desc-row-4">Êm ái, tiện nghi và an toàn cho mọi thành viên trong gia đình</div>
+                    </div>
+                    <div class="view-all view-all-4" style="cursor: pointer;" onclick="toggleViewAll('carList4', this)">Xem tất cả →</div>
+                </div>
+
+                <div class="slider-wrapper pos-4">
+                    <button class="nav-btn prev-btn" onclick="moveCar('prev', 'carList4')">❮</button>
+                    <div class="slider-list" id="carList4"></div>
+                    <button class="nav-btn next-btn" onclick="moveCar('next', 'carList4')">❯</button>
+                </div>
+
+                <div class="tag-luxury">Thị trường xe sang</div>
+                <div class="hero-title">Tìm Xe Mơ Ước Của Bạn Ngay Hôm Hôm Nay</div>
+                <div class="hero-desc">Duyệt qua bộ sưu tập xe cao cấp của chúng tôi với giá cả minh bạch, tài chính nhanh chóng và giao hàng tiện lợi đến tận nhà bạn.</div>
+
+                <div class="stats-wrapper">
+                    <div class="stats-box">
+                        <div class="stats-num">500+</div>
+                        <div class="stats-label">Phương tiện</div>
+                    </div>
+                    <div class="stats-box">
+                        <div class="stats-num">4.9★</div>
+                        <div class="stats-label">Đánh giá</div>
+                    </div>
+                    <div class="stats-box">
+                        <div class="stats-num">50K+</div>
+                        <div class="stats-label">Người mua hàng</div>
+                    </div>
+                </div>
+
+           </div> 
+        </div>
+
+        <div class="faq-news-container">
+            <div class="section-title" style="position: relative; left: 0; top: 0;">Hỏi đáp về mua xe</div>
+            <div class="section-desc" style="position: relative; left: 0; top: 5px; margin-bottom: 20px;">Những thắc mắc thường gặp khi mua xe tại OTO NOW</div>
+            
+            <div class="faq-wrapper">
+                <div class="faq-item">
+                    <div class="faq-question">Thủ tục mua xe trả góp bao gồm những gì? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">Bạn chỉ cần chuẩn bị CCCD, Sổ hộ khẩu/Giấy xác nhận cư trú và Giấy chứng minh thu nhập. Chúng tôi hỗ trợ vay lên đến 80% giá trị xe với mức lãi suất vô cùng ưu đãi từ các ngân hàng đối tác.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Thời gian giao nhận xe mất bao lâu? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">Đối với xe có sẵn tại Showroom, thời gian bàn giao ngay trong ngày. Đối với xe đặt cọc nhập khẩu, thời gian dự kiến từ 30 - 45 ngày tùy vào mẫu xe và hãng sản xuất.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Chính sách bảo hành như thế nào? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">Tất cả xe tại OTO NOW đều hưởng chính sách bảo hành chính hãng toàn cầu từ 3-5 năm. Ngoài ra, chúng tôi tặng kèm gói bảo dưỡng miễn phí 1 năm tại các xưởng dịch vụ chuẩn 5 sao.</div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Tôi có thể yêu cầu lái thử xe tại nhà không? <i class="fas fa-chevron-down"></i></div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">Hoàn toàn có thể. Dịch vụ "Home Test Drive" của chúng tôi sẽ mang chiếc xe bạn quan tâm đến tận nhà để bạn trải nghiệm thực tế trước khi quyết định ký hợp đồng.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="news-section" class="faq-news-container" style="margin-bottom: 80px; margin-top: 80px;">
+            <div class="section-title" style="position: relative; left: 0; top: 0;">Tin tức & Sự kiện</div>
+            <div class="section-desc" style="position: relative; left: 0; top: 5px;">Cập nhật thông tin mới nhất từ thị trường và các hoạt động của OTO NOW</div>
+            
+            <div class="news-grid">
+                <div class="news-card">
+                    <div class="news-img">
+                        <img src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=800&auto=format&fit=crop" alt="News 1">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">15 Tháng 3, 2026</div>
+                        <h3 class="news-title">Sự kiện ra mắt Showroom 5 sao mới tại trung tâm TP.HCM</h3>
+                        <p class="news-excerpt">Trải nghiệm không gian trưng bày đẳng cấp với hàng loạt siêu xe giới hạn vừa hạ cánh. Nhận ngay voucher phụ kiện khi đến tham quan...</p>
+                        <a href="https://vnexpress.net/oto-xe-may" target="_blank" class="news-readmore">Đọc thêm <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="news-card">
+                    <div class="news-img">
+                        <img src="https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?q=80&w=800&auto=format&fit=crop" alt="News 2">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">12 Tháng 3, 2026</div>
+                        <h3 class="news-title">Top 5 mẫu xe hạng sang được giới doanh nhân săn đón nhất</h3>
+                        <p class="news-excerpt">Năm nay chứng kiến sự bứt phá của các dòng SUV cỡ lớn và Sedan lai điện. Cùng OTO NOW điểm qua những cái tên hot nhất thị trường...</p>
+                        <a href="https://dantri.com.vn/oto-xe-may.htm" target="_blank" class="news-readmore">Đọc thêm <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="news-card">
+                    <div class="news-img">
+                        <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=800&auto=format&fit=crop" alt="News 3">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">05 Tháng 3, 2026</div>
+                        <h3 class="news-title">OTO NOW vinh dự đạt giải "Đại lý bán lẻ xuất sắc nhất"</h3>
+                        <p class="news-excerpt">Giải thưởng là minh chứng cho sự nỗ lực không ngừng nghỉ trong việc nâng cao chất lượng dịch vụ và hậu mãi dành cho quý khách hàng...</p>
+                        <a href="https://autopro.com.vn/" target="_blank" class="news-readmore">Đọc thêm <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-footer-section">
+        <div class="detail-footer-wrapper">
+            <div class="detail-footer-col brand-col">
+                <h4>OTO Now</h4>
+                <p class="detail-brand-desc">Hệ thống kinh doanh xe sang uy tín hàng đầu Việt Nam. Chúng tôi cam kết chất lượng và dịch vụ tốt nhất cho mọi khách hàng.</p>
+            </div>
+            <div class="detail-footer-col">
+                <h4>Hỗ trợ khách hàng</h4>
+                <div class="detail-footer-links">
+                    <a href="lien_he.html">Trung tâm trợ giúp</a>
+                    <a href="chinh_sach_bao_mat.html">Chính sách bảo mật</a>
+                    <a href="dieu_khoan.html">Điều khoản sử dụng</a>
+                    <a href="quy_dinh_thanh_toan.html">Quy định thanh toán</a>
+                </div>
+            </div>
+            <div class="detail-footer-col">
+                <h4>Thông hotline</h4>
+                <div class="detail-footer-links">
+                    <a href="#">Hotline: 1900 1234</a>
+                    <a href="#">Email: sales@otonow.com</a>
+                    <a href="#">Showroom: 123 Lê Văn Lương, Hà Nội</a>
+                </div>
+            </div>
+        </div>
+        <div class="detail-copyright-row">
+            © 2026 OTO Now. All rights reserved. Designed with Neon Theme.
+        </div>
+    </div>
+
+    <div id="no-result-message">
+        <div class="no-result-modal" style="position: relative;">
+            <button onclick="resetSearch()" style="position: absolute; top: 15px; right: 15px; background: #F1F5F9; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 16px; color: #EF4444; cursor: pointer; transition: 0.3s;"><i class="fas fa-times"></i></button>
+            <div class="empty-icon-wrapper">
+                <i class="fas fa-car-side"></i>
+                <i class="fas fa-search search-sub-icon"></i>
+            </div>
+            <h3>Không tìm thấy xe nào!</h3>
+            <p>Rất tiếc, không có chiếc xe nào khớp với bộ lọc của bạn. Hãy thử thay đổi tiêu chí tìm kiếm nhé.</p>
+            <button onclick="resetSearch()" class="btn-reset" style="background: #A1FF14; padding: 10px 20px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; color: #000; text-transform: uppercase;">Hiển thị tất cả xe</button>
+        </div>
+    </div>
+
+    <div id="search-results-modal-bg">
+        <div class="search-results-modal">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #E2E8F0;">
+                <div>
+                    <h2 style="font-size: 28px; font-weight: 800; color: #0F172A; margin: 0 0 8px 0;">Kết quả tìm kiếm</h2>
+                    <p style="color: #64748B; margin: 0; font-size: 15px;">Đã tìm thấy <span id="result-count" style="font-weight: bold; color: #16A34A; font-size: 18px;">0</span> xe phù hợp với yêu cầu của bạn</p>
+                </div>
+                <button onclick="closeSearchResults()" style="background: #F1F5F9; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 20px; color: #EF4444; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="search-results-grid" class="modal-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goToDetail(carKey) {
+            localStorage.setItem('selectedCar', carKey);
+            window.location.href = 'pages/auth/chi_tiet_xe.html';
+        }
+
+        const movingStates = { 'carList': false, 'carList2': false, 'carList3': false, 'carList4': false };
+        function moveCar(dir, listID) {
+            if (movingStates[listID]) return; movingStates[listID] = true; 
+            const container = document.getElementById(listID); 
+            const cards = container.getElementsByClassName('car-card');
+            if (cards.length === 0) {
+                movingStates[listID] = false;
+                return;
+            }
+            const dist = 278; 
+            if (dir === 'next') {
+                container.style.transition = 'transform 0.5s ease-in-out'; 
+                container.style.transform = `translateX(-${dist}px)`;
+                setTimeout(() => { 
+                    container.style.transition = 'none'; 
+                    container.style.transform = 'translateX(0)'; 
+                    container.appendChild(cards[0]); 
+                    movingStates[listID] = false; 
+                }, 500);
+            } else {
+                container.style.transition = 'none'; 
+                container.prepend(cards[cards.length - 1]); 
+                container.style.transform = `translateX(-${dist}px)`;
+                void container.offsetWidth; 
+                container.style.transition = 'transform 0.5s ease-in-out'; 
+                container.style.transform = 'translateX(0)';
+                setTimeout(() => { movingStates[listID] = false; }, 500);
+            }
+        }
+
+        const textItems = document.querySelectorAll('.dynamic-text-item');
+        let currentIndex = 0;
+        function changeTextBubble() {
+            textItems[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % textItems.length;
+            textItems[currentIndex].classList.add('active');
+        }
+        if(textItems.length > 1) setInterval(changeTextBubble, 5000);
+
+        function filterCars() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+            const brand = document.getElementById('brandSelect').value;
+            const price = document.getElementById('priceSelect').value;
+            const fuel = document.getElementById('fuelSelect').value;
+
+            const searchModalBg = document.getElementById('search-results-modal-bg');
+            const searchGrid = document.getElementById('search-results-grid');
+            const noResultBox = document.getElementById('no-result-message');
+            const resultCount = document.getElementById('result-count');
+
+            searchGrid.innerHTML = '';
+            noResultBox.classList.remove('active');
+            searchModalBg.classList.remove('active');
+
+            if (searchText === '' && brand === 'all' && price === 'all' && fuel === 'all') return;
+
+            let totalVisible = 0; 
+            const addedCars = new Set(); 
+            const allCards = document.querySelectorAll('.slider-list .car-card');
+            
+            allCards.forEach(card => {
+                const cardName = (card.getAttribute('data-name') || '').toLowerCase();
+                const cardBrand = card.getAttribute('data-brand') || '';
+                const cardPrice = parseInt(card.getAttribute('data-price') || '0');
+                const cardFuel = card.getAttribute('data-fuel') || '';
+                
+                const matchText = cardName.includes(searchText);
+                const matchBrand = (brand === 'all' || cardBrand === brand);
+                const matchFuel = (fuel === 'all' || cardFuel === fuel);
+                
+                let matchPrice = false;
+                if (price === 'all') matchPrice = true;
+                else if (price === 'under500' && cardPrice < 500000000) matchPrice = true;
+                else if (price === '500-1000' && cardPrice >= 500000000 && cardPrice <= 1000000000) matchPrice = true;
+                else if (price === '1000-2000' && cardPrice >= 1000000000 && cardPrice <= 2000000000) matchPrice = true;
+                else if (price === '2000-5000' && cardPrice >= 2000000000 && cardPrice <= 5000000000) matchPrice = true;
+                else if (price === 'above5000' && cardPrice > 5000000000) matchPrice = true;
+                
+                if (matchText && matchBrand && matchFuel && matchPrice) {
+                    if (!addedCars.has(cardName)) {
+                        const clonedCard = card.cloneNode(true);
+                        clonedCard.style.display = 'block';
+                        clonedCard.style.position = 'relative'; 
+                        clonedCard.style.top = '0';
+                        clonedCard.style.left = '0';
+                        clonedCard.style.margin = '0';
+                        clonedCard.style.width = '100%'; 
+                        
+                        searchGrid.appendChild(clonedCard);
+                        addedCars.add(cardName);
+                        totalVisible++;
+                    }
+                }
+            });
+            
+            if (totalVisible === 0) {
+                noResultBox.classList.add('active'); 
+            } else {
+                resultCount.innerText = totalVisible;
+                searchModalBg.classList.add('active'); 
+            }
+        }
+
+        function resetSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('brandSelect').value = 'all';
+            document.getElementById('priceSelect').value = 'all';
+            document.getElementById('fuelSelect').value = 'all';
+            document.getElementById('no-result-message').classList.remove('active');
+        }
+
+        function closeSearchResults() {
+            document.getElementById('search-results-modal-bg').classList.remove('active');
+        }
+
+        function toggleViewAll(listId, btnElement) {
+            const container = document.getElementById(listId);
+            if (!container) return;
+            const wrapper = container.parentElement;
+            const sectionHeader = wrapper.previousElementSibling; 
+
+            if (container.classList.contains('expanded-grid')) {
+                container.classList.remove('expanded-grid');
+                wrapper.classList.remove('expanded');
+                if (sectionHeader) sectionHeader.classList.remove('active-focus');
+                
+                document.body.classList.remove('focus-mode'); 
+                
+                btnElement.innerHTML = 'Xem tất cả →';
+                container.style.transform = 'translateX(0px)';
+                
+                setTimeout(() => {
+                    sectionHeader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 50);
+                
+            } else {
+                container.classList.add('expanded-grid');
+                wrapper.classList.add('expanded');
+                if (sectionHeader) sectionHeader.classList.add('active-focus');
+                
+                document.body.classList.add('focus-mode'); 
+                
+                btnElement.innerHTML = '<i class="fas fa-arrow-left"></i> Quay lại';
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+    
+       // ================= TẢI DỮ LIỆU ĐỘNG TỪ DATABASE =================
+        document.addEventListener("DOMContentLoaded", function() {
+            loadCarsFromDatabase();
+        });
+
+    
+        // 3. Quản lý Menu 3 gạch & Đăng xuất
+        document.addEventListener("click", function(event) {
+            const menuBtn = event.target.closest('.menu-btn');
+            const dropDown = document.querySelector('.main-dropdown-menu');
+            if (menuBtn) {
+                if(dropDown) dropDown.classList.toggle('show');
+            } else if (dropDown && !event.target.closest('.main-dropdown-menu')) {
+                dropDown.classList.remove('show');
+            }
+        });
+
+        async function loadCarsFromDatabase() {
+            try {
+                const response = await fetch('api_get_cars.php');
+                const textData = await response.text(); 
+                
+                let carsData = [];
+                try {
+                    carsData = JSON.parse(textData);
+                } catch (jsonError) {
+                    console.error("Dữ liệu trả về không phải JSON:", textData);
+                    document.getElementById('carList3').innerHTML = `<p style="color:red; text-align:center; width:100%; padding:20px;">Lỗi kết nối CSDL (Lỗi cú pháp PHP). Mở F12 Console để xem chi tiết.</p>`;
+                    return;
+                }
+
+                if (carsData.error) {
+                    document.getElementById('carList3').innerHTML = `<p style="color:red; text-align:center; width:100%; padding:20px;">Lỗi MySQL: ${carsData.error}</p>`;
+                    return;
+                }
+
+                if (!Array.isArray(carsData)) {
+                    document.getElementById('carList3').innerHTML = `<p style="color:red; text-align:center; width:100%; padding:20px;">Lỗi: Dữ liệu bị sai cấu trúc.</p>`;
+                    return;
+                }
+
+                const categories = {
+                    'carList':  { tags: ['Xe nổi bật'], badge: 'Nổi bật', color: '#EF4444' },
+                    'carList2': { tags: ['Xe bán chạy'], badge: 'Bán chạy', color: '#2563EB' },
+                    'carList3': { tags: ['Xe mới nhất'], badge: 'Mới nhất', color: '#16A34A' },
+                    'carList4': { tags: ['Xe điện', 'Xe gia đình'], badge: 'Gia đình', color: '#F59E0B' }
+                };
+
+                Object.entries(categories).forEach(([listId, catInfo]) => {
+                    const container = document.getElementById(listId);
+                    if (!container) return;
+
+                    container.innerHTML = '';
+
+                    const filteredCars = carsData.filter(car => {
+                        let phanLoai = car.phan_loai || '';
+                        if (listId === 'carList3') {
+                            return phanLoai === '' || phanLoai === 'NULL' || phanLoai.includes('Xe mới nhất');
+                        }
+                        return catInfo.tags.some(tag => phanLoai.includes(tag));
+                    });
+
+                    if (filteredCars.length === 0) {
+                        container.innerHTML = '<p style="color:#94A3B8; padding:20px; width: 100%; text-align: center;">Chưa có xe trong mục này...</p>';
+                        return;
+                    }
+
+                    filteredCars.forEach(car => {
+                        const formattedPrice = new Intl.NumberFormat('vi-VN').format(car.gia_ban);
+                        
+                        let imagePath = 'assets/image/placeholder.png';
+                        if (car.hinh_anh && car.hinh_anh !== 'NULL') {
+                            imagePath = `assets/image/${car.hinh_anh}`;
+                        } else if (car.image && car.image !== 'NULL') {
+                            imagePath = car.image.startsWith('assets/') ? car.image : `assets/image/${car.image}`;
+                        }
+                        
+                        const soLuong = parseInt(car.so_luong);
+                        const isSoldOut = (!isNaN(soLuong) && soLuong <= 0);
+
+                        const badgeHtml = isSoldOut 
+                            ? `<div class="badge-hot" style="background:#64748B; color: white; border: none; box-shadow: none;">Hết hàng</div>`
+                            : `<div class="badge-hot" style="background:${catInfo.color}; color: white;">${catInfo.badge}</div>`;
+
+                        const imgStyle = isSoldOut ? 'style="filter: grayscale(100%); opacity: 0.5;"' : '';
+                        const titleStyle = isSoldOut ? 'style="color: #94A3B8;"' : '';
+                        const priceStyle = isSoldOut ? 'style="color: #94A3B8; text-decoration: line-through;"' : '';
+
+                        let brand = 'all', fuel = 'all';
+                        const tenXeLower = (car.ten_xe || '').toLowerCase();
+                        if (tenXeLower.includes('alfa')) { brand = 'alfa-romeo'; fuel = 'petrol'; }
+                        else if (tenXeLower.includes('lamborghini')) { brand = 'lamborghini'; fuel = 'petrol'; }
+                        else if (tenXeLower.includes('ferrari')) { brand = 'ferrari'; fuel = 'hybrid'; }
+                        else if (tenXeLower.includes('nissan')) { brand = 'nissan'; fuel = 'petrol'; }
+                        else if (tenXeLower.includes('audi')) { brand = 'audi'; fuel = 'petrol'; }
+                        else if (tenXeLower.includes('land rover')) { brand = 'land-rover'; fuel = 'hybrid'; }
+                        else if (tenXeLower.includes('bmw')) { brand = 'bmw'; fuel = 'petrol'; }
+                        else if (tenXeLower.includes('ford')) { brand = 'ford'; fuel = 'petrol'; }
+                        else if (tenXeLower.includes('tesla')) { brand = 'tesla'; fuel = 'electric'; }
+                        else if (tenXeLower.includes('vinfast')) { brand = 'vinfast'; fuel = 'electric'; }
+                        
+                        let checkPhanLoai = car.phan_loai || '';
+                        if (checkPhanLoai.includes('Xe điện')) fuel = 'electric';
+
+                        const html = `
+                            <div class="car-card" onclick="goToDetail('CAR-${car.id}')" 
+                                 data-name="${tenXeLower}" 
+                                 data-brand="${brand}" 
+                                 data-price="${car.gia_ban}" 
+                                 data-fuel="${fuel}">
+                                
+                                ${badgeHtml}
+                                <img class="card-img" src="${imagePath}" alt="${car.ten_xe}" ${imgStyle} 
+                                     onerror="this.onerror=null; this.src='assets/image/placeholder.png';">
+                                <div class="card-title" ${titleStyle}>${car.ten_xe}</div>
+                                
+                                <div class="rating-area">
+                                    <div class="stars">★★★★★</div><span>5.0</span>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <span ${titleStyle}>${car.nam_sx}</span> • <span ${titleStyle}>Màu: ${car.mau_sac}</span>
+                                </div>
+                                
+                                <div class="price-value" ${priceStyle}>${formattedPrice} VNĐ</div>
+                                <div class="btn-arrow" ${isSoldOut ? 'style="background: #F1F5F9; color: #CBD5E1;"' : ''}>→</div>
+                            </div>
+                        `;
+                        container.innerHTML += html;
+                    });
+                });
+
+            } catch (error) {
+                console.error("Lỗi sập mạng hoặc sai JS:", error);
+                document.getElementById('carList3').innerHTML = `<p style="color:red; text-align:center; width:100%; padding:20px;">Đã xảy ra lỗi sập mã Javascript. Vui lòng tải lại trang (F5).</p>`;
+            }
+        }
+    </script>
+
+    <style>
+        .floating-widget-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; align-items: center; }
+        .float-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 26px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.15); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none; text-decoration: none; }
+        .float-btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 8px 25px rgba(0,0,0,0.25); color: white; }
+        @keyframes shake-icon { 0% { transform: rotate(0deg); } 25% { transform: rotate(-15deg); } 50% { transform: rotate(15deg); } 75% { transform: rotate(-15deg); } 100% { transform: rotate(0deg); } }
+        .float-btn:hover i { animation: shake-icon 0.5s ease-in-out; }
+        #scrollToTopBtn { background: #1E3A8A; display: none; opacity: 0; transition: opacity 0.3s ease; }
+        #scrollToTopBtn.show { display: flex; opacity: 1; }
+        .zalo-btn { background: #0068FF; font-weight: 800; font-family: 'Inter', sans-serif; font-size: 16px;}
+        .fb-btn { background: linear-gradient(45deg, #00C6FF, #0072FF); }
+        .chat-btn { background: #16A34A; animation: pulse-green 2s infinite; }
+        .chat-btn:hover { animation: none; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(22, 163, 74, 0); } 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); } }
+        .mini-chat-window { position: fixed; bottom: 100px; right: 40px; width: 350px; height: 480px; background: #fff; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden; z-index: 10000; opacity: 0; visibility: hidden; transform: translateY(30px) scale(0.9); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-origin: bottom right; }
+        .mini-chat-window.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .chat-header { background: #16A34A; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-header-info { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 16px;}
+        .chat-header-info i { font-size: 24px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%;}
+        .chat-header button { background: none; border: none; color: white; font-size: 20px; cursor: pointer; transition: 0.3s; }
+        .chat-header button:hover { transform: rotate(90deg) scale(1.2); }
+        .chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #F8FAFC; }
+        @keyframes message-pop { 0% { opacity: 0; transform: translateY(20px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        .chat-msg { max-width: 85%; padding: 12px 16px; font-size: 14.5px; line-height: 1.5; font-family: 'Inter', sans-serif; animation: message-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .bot-msg { background: #E2E8F0; color: #0F172A; align-self: flex-start; border-radius: 16px 16px 16px 4px; transform-origin: bottom left;}
+        .user-msg { background: #16A34A; color: white; align-self: flex-end; border-radius: 16px 16px 4px 16px; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.2); transform-origin: bottom right;}
+        .chat-footer { padding: 15px; background: white; border-top: 1px solid #E2E8F0; display: flex; gap: 10px; }
+        .chat-footer input { flex: 1; padding: 12px 15px; border: 1px solid #E2E8F0; border-radius: 25px; outline: none; font-size: 14px; background: #F8FAFC; transition: 0.3s; }
+        .chat-footer input:focus { border-color: #16A34A; background: #fff;}
+        .chat-footer button { background: #16A34A; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: 0.3s; }
+        .chat-footer button:hover { background: #15803d; transform: scale(1.1) rotate(10deg); }
+        @keyframes blink { 0% {opacity: .2;} 20% {opacity: 1;} 100% {opacity: .2;} }
+        .typing-dots span { font-size: 24px; line-height: 10px; animation-name: blink; animation-duration: 1.4s; animation-iteration-count: infinite; animation-fill-mode: both; }
+        .typing-dots span:nth-child(2) { animation-delay: .2s; }
+        .typing-dots span:nth-child(3) { animation-delay: .4s; }
+    </style>
+
+    <div class="floating-widget-container">
+        <button id="scrollToTopBtn" class="float-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Lên đầu trang"><i class="fas fa-arrow-up"></i></button>
+        <a href="https://zalo.me/0988888888" target="_blank" class="float-btn zalo-btn" title="Chat Zalo">Zalo</a>
+        <a href="https://m.me/otonow" target="_blank" class="float-btn fb-btn" title="Chat Facebook Messenger"><i class="fab fa-facebook-messenger"></i></a>
+        <button class="float-btn chat-btn" onclick="toggleChat()" title="Tư vấn tự động"><i class="fas fa-comment-dots"></i></button>
+    </div>
+
+    <div id="otoChatWindow" class="mini-chat-window">
+        <div class="chat-header">
+            <div class="chat-header-info"><i class="fas fa-robot"></i><span>Trợ lý OTO NOW</span></div>
+            <button onclick="toggleChat()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-body" id="chatBoxBody">
+            <div class="chat-msg bot-msg">Xin chào! 👋 Tôi là trợ lý ảo của OTO NOW. Chào mừng bạn đến với thế giới xe sang.<br><br>Bạn đang cần tư vấn mua xe, hay tìm hiểu về thủ tục trả góp ạ?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="Nhập câu hỏi của bạn..." onkeypress="if(event.key === 'Enter') sendMsg()">
+            <button onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const upBtn = document.getElementById('scrollToTopBtn');
+            if (window.scrollY > 300) { upBtn.classList.add('show'); } 
+            else { upBtn.classList.remove('show'); }
+        });
+
+        function toggleChat() {
+            document.getElementById('otoChatWindow').classList.toggle('active');
+            if(document.getElementById('otoChatWindow').classList.contains('active')) {
+                document.getElementById('chatInput').focus();
+            }
+        }
+
+        const botReplies = [
+            "Dạ, hiện tại OTO NOW đang phân phối các dòng xe cao cấp từ Audi, BMW, Lamborghini cho đến xe điện VinFast. Bạn đang phân vân hãng nào ạ?",
+            "Vâng, thủ tục mua xe trả góp bên mình hỗ trợ vay lên đến 80% giá trị xe, chỉ cần CCCD thôi ạ. Quá trình giải ngân cực kỳ nhanh chóng.",
+            "Tuyệt vời! Để nhận báo giá lăn bánh chi tiết và các chương trình khuyến mãi hiện có, bạn vui lòng để lại **Số điện thoại**, chuyên viên bên mình sẽ gọi lại tư vấn ngay ạ!",
+            "Dạ, bạn có muốn đặt lịch lái thử (Home Test Drive) để bên mình mang xe đến tận nhà cho bạn trải nghiệm không ạ?",
+            "Cảm ơn bạn đã quan tâm. OTO NOW sẽ liên hệ với bạn trong thời gian sớm nhất. Chúc bạn một ngày tốt lành! 😊"
+        ];
+        let replyIndex = 0;
+
+        function sendMsg() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if(!msg) return;
+
+            const chatBody = document.getElementById('chatBoxBody');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'chat-msg user-msg';
+            userDiv.innerText = msg;
+            chatBody.appendChild(userDiv);
+            
+            input.value = ''; 
+            chatBody.scrollTop = chatBody.scrollHeight; 
+
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-msg bot-msg typing-dots';
+            typingDiv.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+            chatBody.appendChild(typingDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            setTimeout(() => {
+                chatBody.removeChild(typingDiv); 
+                const botDiv = document.createElement('div');
+                botDiv.className = 'chat-msg bot-msg';
+                botDiv.innerHTML = botReplies[replyIndex]; 
+                chatBody.appendChild(botDiv);
+                chatBody.scrollTop = chatBody.scrollHeight;
+                if(replyIndex < botReplies.length - 1) { replyIndex++; }
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

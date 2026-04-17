@@ -1,0 +1,151 @@
+/* =========================================================
+   ANALYTICS PAGE - FIXED SIDEBAR LAYOUT
+   ========================================================= */
+
+:root {
+    /* --- MÀU SẮC NEON THEME --- */
+    --bg-body: #f0f2f5;
+    --sidebar-dark: #020817;
+    --primary: #A1FF14;
+    --primary-dark: #8cde0f;
+    --text-main: #020817;
+    --text-sub: #5D6879;
+    --border: #E7EAEF;
+    --white: #ffffff;
+    --admin-bg: #EEF2F6; /* Nền xám xanh chuẩn */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+/* 1. KHÓA CUỘN CỦA BODY (QUAN TRỌNG) */
+html, body { 
+    height: 100vh;           /* Chiều cao cố định bằng màn hình */
+    overflow: hidden;        /* Cấm cuộn cả trang */
+    background-color: var(--admin-bg);
+}
+
+/* 2. KHUNG BAO NGOÀI (FLEXBOX) */
+.app-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;           /* Full màn hình */
+    overflow: hidden;        /* Cấm cuộn khung bao */
+    background-color: var(--admin-bg);
+}
+
+/* ================== 3. SIDEBAR (BÊN TRÁI - ĐỨNG YÊN) ================== */
+.admin-sidebar {
+    width: 260px;
+    background-color: #020817; /* Đen đậm hơn */
+    border-right: 1px solid rgba(255,255,255,0.1);
+    display: flex; flex-direction: column;
+    padding: 20px; flex-shrink: 0;
+}
+
+.admin-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 30px; margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.admin-logo img { height: 35px; width: auto; }
+.admin-logo span { font-weight: 800; font-size: 18px; color: #A1FF14; letter-spacing: 1px; }
+
+.sidebar-menu { list-style: none; padding: 0; margin: 0; }
+.sidebar-menu li { margin-bottom: 5px; }
+.sidebar-menu a {
+    display: flex; align-items: center; gap: 15px;
+    padding: 12px 15px; color: #94A3B8; text-decoration: none;
+    border-radius: 8px; transition: 0.3s; font-size: 14px; font-weight: 500;
+}
+.sidebar-menu a:hover, .sidebar-menu li.active a {
+    background-color: rgba(161, 255, 20, 0.1);
+    color: #A1FF14; /* Màu Neon khi chọn */
+}
+.sidebar-menu i { width: 20px; text-align: center; }
+
+.sidebar-footer { margin-top: auto; }
+.sidebar-footer a { color: #EF4444; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+/* ================== 4. MAIN CONTENT (BÊN PHẢI) ================== */
+.main-content { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column;
+    min-width: 0; 
+    height: 100%;            /* Cao full màn hình */
+    overflow: hidden;        /* Cấm cuộn wrapper này */
+    background-color: var(--admin-bg);
+}
+
+/* Header trắng (Đứng yên) */
+.top-header {
+    height: 80px; background: var(--white); 
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; 
+    padding: 0 32px;
+    flex-shrink: 0;          /* Không bị co */
+    z-index: 40;
+}
+
+.header-search { display: flex; align-items: center; gap: 10px; color: var(--text-sub); background: #f8fafc; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border); }
+.header-search input { border: none; outline: none; font-size: 14px; background: transparent; width: 250px; }
+.header-right { display: flex; align-items: center; gap: 24px; }
+.notification-bell { position: relative; font-size: 20px; color: var(--text-sub); cursor: pointer; }
+.notification-bell .dot { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: #EF4444; border-radius: 50%; border: 2px solid white; }
+.user-profile { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.user-text { text-align: right; }
+.user-name { display: block; font-size: 14px; font-weight: 600; color: var(--text-main); }
+.user-status { font-size: 12px; color: #16A34A; }
+.user-avatar { width: 40px; height: 40px; background: var(--primary) !important; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-size: 18px; }
+
+/* ================== 5. CONTENT WRAPPER (PHẦN NỘI DUNG CUỘN) ================== */
+.content-wrapper { 
+    padding: 32px; 
+    flex: 1;                 /* Lấp đầy khoảng trống */
+    overflow-y: auto;        /* [QUAN TRỌNG] Cho phép cuộn dọc tại đây */
+}
+
+.welcome h1 { font-size: 28px; margin-bottom: 5px; color: var(--text-main); font-weight: 700; }
+.welcome p { color: var(--text-sub); margin-bottom: 32px; }
+
+.card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+
+/* Stats Grid */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
+.stat-card { padding: 20px; border-radius: 12px; border: 1px solid transparent; }
+.stat-card.blue { background: #F0F9FF; border-color: #BAE6FD; }
+.stat-card.cyan { background: #ECFEFF; border-color: #A5F3FC; }
+.stat-card.green { background: #F0FDF4; border-color: #BBF7D0; }
+.stat-card.purple { background: #FAF5FF; border-color: #E9D5FF; }
+
+.card-head { display: flex; justify-content: space-between; color: var(--text-sub); font-size: 14px; margin-bottom: 12px; font-weight: 600; }
+.card-value { font-size: 32px; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+.card-trend { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.card-trend.pos { color: #16A34A; }
+.card-trend small { color: var(--text-sub); font-weight: 400; margin-left: 4px; }
+
+/* Charts Grid */
+.charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+.chart-box { background: white; padding: 24px; border-radius: 12px; border: 1px solid var(--border); }
+.chart-box h3 { font-size: 18px; margin-bottom: 4px; color: var(--text-main); font-weight: 700; }
+.chart-box .subtitle { color: var(--text-sub); font-size: 14px; margin-bottom: 24px; display: block; }
+
+.placeholder-img { 
+    height: 300px; 
+    background: #F8FAFC; 
+    border: 2px dashed #CBD5E1; 
+    border-radius: 8px; 
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; 
+    color: #94A3B8; gap: 10px;
+}
+.placeholder-img i { font-size: 32px; opacity: 0.5; }
+
+/* --- CẬP NHẬT MÀU ICON NEON --- */
+.top-header i, .action-btns button i, .card-header i { color: #7ab800 !important; }
+.action-btns button:hover i { color: #A1FF14 !important; }
+.user-avatar i { color: #000000 !important; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .charts-grid { grid-template-columns: 1fr; }
+}

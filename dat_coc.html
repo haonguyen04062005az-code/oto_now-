@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán Đặt cọc - OTO NOW</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .btn-location {
+            background: #1E293B; color: #A1FF14; border: none; border-radius: 12px;
+            padding: 0 20px; font-size: 14px; font-weight: 700; cursor: pointer;
+            transition: 0.3s; display: flex; align-items: center; gap: 8px; white-space: nowrap;
+        }
+        .btn-location:hover { background: #0F172A; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        #map-container {
+            display: none; margin-top: 15px; border-radius: 12px; overflow: hidden; 
+            border: 2px solid #E2E8F0; height: 250px; width: 100%; position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <script src="header.js"></script>
+
+    <div class="checkout-container">
+        
+        <div class="checkout-main">
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Thông tin liên hệ</div>
+                </div>
+                <div class="form-grid">
+                    <div class="input-group form-full">
+                        <label class="input-label">Họ và tên</label>
+                        <input type="text" class="input-field" placeholder="Nhập họ và tên đầy đủ" id="inp-name">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Số điện thoại</label>
+                        <input type="text" class="input-field" placeholder="09xx xxx xxx" id="inp-phone">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Email</label>
+                        <input type="email" class="input-field" placeholder="email@domain.com" id="inp-email">
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Phương thức thanh toán</div>
+                </div>
+                <div class="payment-methods">
+                    <label class="method-label payment-method active">
+                        <input type="radio" name="payment" checked>
+                        <i class="fas fa-university"></i>
+                        <span>Chuyển khoản Ngân hàng (Khuyên dùng)</span>
+                    </label>
+                    <label class="method-label payment-method">
+                        <input type="radio" name="payment">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Thẻ tín dụng / Thẻ ghi nợ</span>
+                    </label>
+                </div>
+                <div class="form-grid">
+                    <div class="input-group form-full">
+                        <label class="input-label">Tên chủ thẻ / Tài khoản</label>
+                        <input type="text" class="input-field" placeholder="NGUYEN VAN A">
+                    </div>
+                    <div class="input-group form-full">
+                        <label class="input-label">Số thẻ / Số tài khoản</label>
+                        <input type="text" class="input-field" placeholder="XXXX XXXX XXXX XXXX">
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Hình thức nhận xe</div>
+                </div>
+                <div class="payment-methods">
+                    <label class="method-label delivery-method active">
+                        <input type="radio" name="delivery" value="showroom" checked>
+                        <i class="fas fa-store"></i>
+                        <span>Nhận tại Showroom</span>
+                    </label>
+                    <label class="method-label delivery-method">
+                        <input type="radio" name="delivery" value="home">
+                        <i class="fas fa-truck"></i>
+                        <span>Giao xe tận nhà</span>
+                    </label>
+                </div>
+
+                <div class="form-grid" id="home-delivery-address" style="display: none; margin-top: 15px;">
+                    <div class="input-group form-full">
+                        <label class="input-label">Địa chỉ giao xe <span style="color: red;">*</span></label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" class="input-field" style="flex: 1;" placeholder="Nhập địa chỉ hoặc bấm định vị..." id="inp-address">
+                            <button type="button" id="btn-get-location" class="btn-location" onclick="getLocation()" title="Lấy vị trí GPS hiện tại">
+                                <i class="fas fa-map-marker-alt"></i> Định vị GPS
+                            </button>
+                        </div>
+                        <small id="location-status" style="color: #64748B; margin-top: 5px; font-weight: 500;"></small>
+                        <div id="map-container">
+                            <iframe id="map-iframe" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src=""></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; border-top: 1px solid #E2E8F0; padding-top: 20px;">
+                    <button class="btn-submit-order" onclick="processCheckout()">Hoàn tất đặt cọc <i class="fas fa-check-circle"></i></button>
+                    <button class="btn-back" onclick="window.history.back()" style="margin-top: 10px;">Quay lại trang trước</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-summary">
+            <img src="assets/image/placeholder.png" alt="Car" class="order-car-img" id="checkout-img">
+            <div class="order-car-name" id="checkout-name">Đang tải thông tin xe...</div>
+            
+            <div class="summary-row">
+                <span class="summary-label">Giá niêm yết</span>
+                <span class="summary-value" id="checkout-price">--- VNĐ</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Nơi nhận xe</span>
+                <span class="summary-value" id="summary-delivery-text" style="color: #2563EB;"><i class="fas fa-store"></i> Tại Showroom</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Phí hồ sơ & Giao xe</span>
+                <span class="summary-value" style="color: #16A34A; font-weight: bold;">Miễn phí</span>
+            </div>
+            
+            <div class="total-row">
+                <span class="total-label">Tiền đặt cọc (20%)</span>
+                <span class="total-value" id="summary-deposit-value">Đang tính...</span>
+            </div>
+
+            <div class="secure-badge">
+                <i class="fas fa-shield-check"></i> Thanh toán bảo mật SSL 256-bit
+            </div>
+        </div>
+
+    </div>
+
+    <div class="detail-footer-section">
+        <div class="detail-footer-wrapper">
+            <div class="detail-footer-col brand-col">
+                <h4>OTO Now</h4>
+                <p class="detail-brand-desc">Hệ thống kinh doanh xe sang uy tín hàng đầu Việt Nam.</p>
+            </div>
+            <div class="detail-footer-col">
+                <h4>Hỗ trợ khách hàng</h4>
+                <div class="detail-footer-links">
+                    <a href="lien_he.html">Trung tâm trợ giúp</a>
+                    <a href="chinh_sach_bao_mat.html">Chính sách bảo mật</a>
+                    <a href="quy_dinh_thanh_toan.html">Quy định thanh toán</a>
+                </div>
+            </div>
+            <div class="detail-footer-col">
+                <h4>Thông tin liên hệ</h4>
+                <div class="detail-footer-links">
+                    <a href="#">Hotline: 1900 1234</a>
+                    <a href="#">Email: sales@otonow.com</a>
+                    <a href="#">Showroom: 123 Lê Văn Lương, Hà Nội</a>
+                </div>
+            </div>
+        </div>
+        <div class="detail-copyright-row">© 2026 OTO Now. All rights reserved.</div>
+    </div>
+
+    <div id="qrModal" class="qr-modal-overlay">
+        <div class="qr-modal-box">
+            <div class="qr-header">
+                <h2><i class="fas fa-qrcode" style="color: #16A34A; margin-right: 8px;"></i> Quét mã để thanh toán</h2>
+                <button class="qr-close-btn" onclick="closeQRModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <p style="color: #64748B; font-size: 14px; line-height: 1.5;">Vui lòng dùng điện thoại quét mã QR bên dưới. Trình duyệt sẽ tự động chuyển trang khi bạn bấm xác nhận trên điện thoại.</p>
+            <div class="qr-image-container">
+                <img src="assets/image/placeholder.png" id="qr-image-display" alt="Mã QR Thanh Toán" class="qr-image">
+            </div>
+            <div class="qr-details">
+                <p>Số tiền đặt cọc (20%):</p>
+                <div class="qr-amount">Đang tính...</div>
+                <p style="font-size: 14px; color: #DC2626; font-weight: 600;"><i class="fas fa-spinner fa-spin"></i> Đang chờ điện thoại quét mã...</p>
+            </div>
+            <button class="btn-confirm-payment" style="background: transparent; color: #64748B; border: 2px solid #E2E8F0; box-shadow: none;" onclick="fallbackPayment()">
+                Bỏ qua quét mã (Dùng để Giả lập)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ BẮT BUỘC: ĐIỀN ĐỊA CHỈ IP CỦA MÁY TÍNH BẠN VÀO ĐÂY
+        const MY_IP = "192.168.1.8"; 
+
+        let paymentInterval;
+        let currentOrderId;
+        let currentDepositAmount = 0; // Biến lưu số tiền cọc 20%
+        let globalCustomerName = "Khách hàng"; 
+        let globalCustomerPhone = "09xx";      
+        let globalDeliveryMethod = "Nhận tại Showroom"; 
+        let globalDeliveryAddress = "Showroom OTO NOW"; 
+
+        function getCarImage(carName) {
+            if (!carName) return "assets/image/placeholder.png";
+            const name = carName.toLowerCase();
+            if(name.includes('alfa') || name.includes('arg')) return "assets/image/ARG Quadrifoglio.png";
+            if(name.includes('audi')) return "assets/image/AUDI.png";
+            if(name.includes('lamborghini')) return "assets/image/Lamborghini AVD SuperVeloce.png";
+            if(name.includes('nissan')) return "assets/image/NISSAN SKYLINE GT-R (R34).png";
+            if(name.includes('vf3')) return "assets/image/vf3.png";
+            if(name.includes('vf5')) return "assets/image/vf5.png";
+            if(name.includes('vf9')) return "assets/image/vf9.png";
+            if(name.includes('range rover')) return "assets/image/Land Rover Range Rover .png";
+            if(name.includes('bmw')) return "assets/image/BMW M4.png";
+            if(name.includes('tesla')) return "assets/image/Tesla Model S.png";
+            if(name.includes('ford')) return "assets/image/FORD MUSTANG SHELBY GT350R.png";
+            if(name.includes('ferrari')) return "assets/image/Ferrari Laferrari (Hybrid).png";
+            if(name.includes('lexus')) return "assets/image/Lexus LS 500h Hybrid.webp";
+            return "assets/image/placeholder.png";
+        }
+
+        document.addEventListener("DOMContentLoaded", async function() {
+            // 1. Quản lý Đăng nhập
+            const userSession = localStorage.getItem("currentUser");
+            const authSection = document.getElementById('auth-section');
+            if (userSession) {
+                const user = JSON.parse(userSession);
+                if(authSection) {
+                    authSection.innerHTML = `
+                        <div class="user-account-box" style="display:flex; gap:10px; align-items:center; cursor:pointer;" onclick="handleLogout()">
+                            <span style="font-weight:600;">${user.name}</span>
+                            <div style="width:35px;height:35px;background:#A1FF14;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#000;">${user.name.charAt(0)}</div>
+                        </div>`;
+                }
+                const nameInput = document.getElementById('inp-name');
+                const emailInput = document.getElementById('inp-email');
+                if(nameInput) nameInput.value = user.name;
+                if(emailInput) emailInput.value = user.email || "";
+            } else {
+                if(authSection) authSection.innerHTML = `<a href="pages/auth/GD_dangnhap.html" class="btn-login-header">Đăng nhập</a>`;
+            }
+
+            // 2. Logic Chọn UI
+            const paymentLabels = document.querySelectorAll('.payment-method');
+            paymentLabels.forEach(label => {
+                label.addEventListener('click', function() {
+                    paymentLabels.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            const deliveryLabels = document.querySelectorAll('.delivery-method');
+            const addressBox = document.getElementById('home-delivery-address');
+            const summaryDeliveryText = document.getElementById('summary-delivery-text');
+
+            deliveryLabels.forEach(label => {
+                label.addEventListener('click', function() {
+                    deliveryLabels.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const radioVal = this.querySelector('input[type="radio"]').value;
+                    if(radioVal === 'home') {
+                        addressBox.style.display = 'block'; 
+                        if(summaryDeliveryText) summaryDeliveryText.innerHTML = '<i class="fas fa-truck"></i> Giao tận nhà';
+                    } else {
+                        addressBox.style.display = 'none';  
+                        if(summaryDeliveryText) summaryDeliveryText.innerHTML = '<i class="fas fa-store"></i> Tại Showroom';
+                    }
+                });
+            });
+
+            // 3. LOGIC TÍNH TOÁN TIỀN XE TỐI ƯU (Tránh bị kẹt loading)
+            const selectedCarKey = localStorage.getItem('selectedCar');
+            const orderImg = document.querySelector('.order-car-img');
+            const orderName = document.querySelector('.order-car-name');
+            const orderPrice = document.getElementById('checkout-price');
+            const depositValue = document.getElementById('summary-deposit-value');
+            const qrAmountEl = document.querySelector('.qr-amount');
+            
+            if (!selectedCarKey) {
+                if(orderName) orderName.innerText = "CHƯA CHỌN XE";
+                if(depositValue) depositValue.innerText = "0 đ";
+                return;
+            }
+
+            // Hàm hỗ trợ in dữ liệu ra UI
+            function updateCarUI(car) {
+                if (!car) return;
+                const giaBan = parseInt(car.gia_ban) || 0;
+                currentDepositAmount = giaBan * 0.2; // TÍNH 20% CHUẨN XÁC
+
+                const formattedPrice = new Intl.NumberFormat('vi-VN').format(giaBan);
+                const formattedDeposit = new Intl.NumberFormat('vi-VN').format(currentDepositAmount);
+
+                if(orderImg) orderImg.src = getCarImage(car.ten_xe);
+                if(orderName) orderName.innerText = car.ten_xe;
+                if(orderPrice) orderPrice.innerText = formattedPrice + ' VNĐ';
+                
+                // Cập nhật giao diện tiền cọc ở cả Tóm tắt đơn và QR Code
+                if(depositValue) depositValue.innerText = formattedDeposit + ' đ';
+                if(qrAmountEl) qrAmountEl.innerText = formattedDeposit + ' VNĐ';
+            }
+
+            let fetchUrl = selectedCarKey.startsWith('CAR-') 
+                ? `api_get_car_detail.php?id=${selectedCarKey.replace('CAR-', '')}`
+                : `api_get_car_detail.php?name=${encodeURIComponent(selectedCarKey)}`;
+
+            try {
+                const response = await fetch(fetchUrl);
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+                updateCarUI(data); // Gọi hàm để vẽ UI
+            } catch (error) {
+                // Nếu api_get_car_detail bị lỗi, tìm trong danh sách tổng
+                try {
+                    const res = await fetch('api_get_cars.php');
+                    const cars = await res.json();
+                    const found = cars.find(c => c.id.toString() === selectedCarKey.replace('CAR-', '') || c.ten_xe.toLowerCase() === selectedCarKey.toLowerCase());
+                    
+                    if (found) {
+                        updateCarUI(found); // Vẫn gọi hàm vẽ UI bình thường
+                    } else {
+                        if(orderName) orderName.innerText = "LỖI TẢI DỮ LIỆU XE";
+                        if(depositValue) depositValue.innerText = "Lỗi đ";
+                    }
+                } catch(e) {
+                    if(orderName) orderName.innerText = "LỖI KẾT NỐI DATABASE";
+                    if(depositValue) depositValue.innerText = "Lỗi đ";
+                }
+            }
+        });
+
+        // ================= HÀM LẤY VỊ TRÍ GPS =================
+        function getLocation() {
+            const statusText = document.getElementById('location-status');
+            const addressInput = document.getElementById('inp-address');
+            const mapContainer = document.getElementById('map-container');
+            const mapIframe = document.getElementById('map-iframe');
+            const btn = document.getElementById('btn-get-location');
+
+            if (!navigator.geolocation) {
+                statusText.innerText = "Trình duyệt của bạn không hỗ trợ định vị GPS.";
+                statusText.style.color = "red";
+                return;
+            }
+
+            const originalBtnHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tìm...';
+            btn.style.pointerEvents = 'none';
+            statusText.innerText = "Đang kết nối vệ tinh GPS...";
+            statusText.style.color = "#2563EB";
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    mapContainer.style.display = 'block';
+                    mapIframe.src = `https://www.openstreetmap.org/export/embed.html?bbox=${lon-0.005},${lat-0.005},${lon+0.005},${lat+0.005}&layer=mapnik&marker=${lat},${lon}`;
+
+                    statusText.innerText = "Đang giải mã địa chỉ...";
+                    try {
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
+                        const data = await response.json();
+                        
+                        if(data && data.display_name) {
+                            addressInput.value = data.display_name; 
+                            statusText.innerText = "Đã tìm thấy vị trí của bạn!";
+                            statusText.style.color = "#16A34A";
+                        } else {
+                            throw new Error("Không có tên đường");
+                        }
+                    } catch (error) {
+                        statusText.innerText = "Chỉ lấy được tọa độ, bạn có thể tự nhập thêm số nhà.";
+                        statusText.style.color = "#CA8A04";
+                        addressInput.value = `Tọa độ GPS: ${lat}, ${lon}`;
+                    } finally {
+                        btn.innerHTML = originalBtnHtml;
+                        btn.style.pointerEvents = 'auto';
+                    }
+                },
+                (error) => {
+                    btn.innerHTML = originalBtnHtml;
+                    btn.style.pointerEvents = 'auto';
+                    statusText.style.color = "red";
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            statusText.innerText = "Bạn đã từ chối cấp quyền vị trí. Vui lòng tự nhập địa chỉ.";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            statusText.innerText = "Tín hiệu GPS yếu hoặc không khả dụng.";
+                            break;
+                        case error.TIMEOUT:
+                            statusText.innerText = "Thời gian lấy vị trí quá lâu (Timeout).";
+                            break;
+                    }
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
+
+        // ================= XỬ LÝ THANH TOÁN =================
+        // ================= XỬ LÝ THANH TOÁN VÀ TẠO QR =================
+        function processCheckout() {
+            const name = document.getElementById('inp-name').value;
+            const phone = document.getElementById('inp-phone').value;
+            globalCustomerName = name || "Khách hàng";
+            globalCustomerPhone = phone || "09xx";
+            
+            if(!name || !phone) { 
+                alert("Vui lòng nhập Họ tên và Số điện thoại!"); 
+                return; 
+            }
+
+            const activeDelivery = document.querySelector('.delivery-method.active input[type="radio"]').value;
+            if (activeDelivery === 'home') {
+                const address = document.getElementById('inp-address').value;
+                if (!address) {
+                    alert("Vui lòng nhập hoặc định vị Địa chỉ để OTO NOW giao xe tới cho bạn nhé!");
+                    return;
+                }
+                globalDeliveryMethod = "Giao tận nhà";
+                globalDeliveryAddress = address;
+            } else {
+                globalDeliveryMethod = "Nhận tại Showroom";
+                globalDeliveryAddress = "Showroom OTO NOW";
+            }
+
+            const activePaymentMethod = document.querySelector('.payment-method.active');
+            const methodText = activePaymentMethod.innerText.toLowerCase();
+            const isQRMethod = methodText.includes('ngân hàng') || methodText.includes('mã');
+
+            if (!isQRMethod) {
+                executeOrderSuccess("Thanh toán qua thẻ thành công! OTO NOW đã ghi nhận khoản đặt cọc 20%."); 
+                return;
+            }
+
+            // 1. Khởi tạo mã đơn
+            currentOrderId = "ORD" + Date.now();
+            fetch(`api_payment.php?action=create&order_id=${currentOrderId}`);
+
+            // 2. Gắn ĐỒNG THỜI Mã đơn và Số tiền 20% vào Link chuyển sang điện thoại
+            const mobileUrl = `http://${MY_IP}/OTO_NOW/xac_nhan_qr.html?order_id=${currentOrderId}&amount=${currentDepositAmount}`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(mobileUrl)}`;
+            
+            // 💡 MẸO: NẾU BẠN MUỐN HIỂN THỊ MÃ QR CỦA NGÂN HÀNG THẬT (VIETQR) THÌ DÙNG LINK NÀY:
+            // Bạn thay "MB" thành ngân hàng của bạn, "0988888888" thành STK của bạn
+            // const qrApiUrl = `https://img.vietqr.io/image/MB-0988888888-compact2.png?amount=${currentDepositAmount}&addInfo=${currentOrderId}`;
+
+            document.getElementById('qr-image-display').src = qrApiUrl;
+            document.getElementById('qrModal').classList.add('show');
+
+            paymentInterval = setInterval(checkIfPhonePaid, 1500);
+        }
+
+        function checkIfPhonePaid() {
+            fetch(`api_payment.php?action=check&order_id=${currentOrderId}`)
+            .then(res => res.text())
+            .then(status => {
+                if (status === 'paid') {
+                    clearInterval(paymentInterval); 
+                    closeQRModal();
+                    executeOrderSuccess("Tuyệt vời! Hệ thống đã nhận được tín hiệu thanh toán thành công từ điện thoại của bạn.");
+                }
+            });
+        }
+
+        function fallbackPayment() {
+            clearInterval(paymentInterval);
+            closeQRModal();
+            executeOrderSuccess("Giao dịch thành công (Bằng nút giả lập)!");
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').classList.remove('show');
+            if(paymentInterval) clearInterval(paymentInterval);
+        }
+
+        function handleLogout() { 
+            localStorage.removeItem("currentUser"); 
+            window.location.reload(); 
+        }
+
+        async function executeOrderSuccess(successMessage) {
+            const selectedCarKey = localStorage.getItem('selectedCar');
+            if (!selectedCarKey) {
+                alert(successMessage + "\n(Lỗi: Không trừ được kho vì mất ID xe)");
+                window.location.href = "index.html";
+                return;
+            }
+
+            try {
+                const response = await fetch('api_update_stock.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        car_id: selectedCarKey,
+                        customer_name: globalCustomerName,
+                        customer_phone: globalCustomerPhone,
+                        delivery_method: globalDeliveryMethod,
+                        delivery_address: globalDeliveryAddress
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    alert("🎉 " + successMessage + "\n\n" + result.message);
+                    localStorage.removeItem('selectedCar');
+                    window.location.href = 'index.html';
+                } else {
+                    alert("❌ Lỗi Database:\n" + result.message);
+                    if(result.message.includes('hết hàng')) {
+                        window.location.href = 'index.html'; 
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                alert("🎉 " + successMessage + "\n(Ghi chú: Demo Không có CSDL)");
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</body>
+</html>

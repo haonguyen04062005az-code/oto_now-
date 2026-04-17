@@ -1,0 +1,42 @@
+/* --- 1. CÀI ĐẶT CHUNG (BASE) --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+    /* Khai báo biến màu để dùng chung (nếu cần) */
+    --font-main: 'Inter', sans-serif;
+    --color-dark: #333;
+    --color-light: #666;
+    --border-color: #ddd;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-main);
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-dark);
+}
+
+/* Style chữ cơ bản */
+h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #111;
+}
+
+.subtitle {
+    color: var(--color-light);
+    margin-bottom: 40px;
+    font-size: 14px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán OTO NOW</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #f1f5f9; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: #fff; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        .amount { font-size: 32px; font-weight: 800; color: #16a34a; margin: 15px 0; }
+        .btn { width: 100%; padding: 15px; background: #A1FF14; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; color: #000; box-shadow: 0 5px 15px rgba(161,255,20,0.4); margin-top: 20px;}
+        .btn:active { transform: scale(0.95); }
+        .success-icon { font-size: 60px; color: #16a34a; margin-bottom: 20px; display: none;}
+    </style>
+</head>
+<body>
+    <div class="card" id="payment-card">
+        <h2>XÁC NHẬN THANH TOÁN</h2>
+        <p style="color: #64748b;">Bạn đang thực hiện giao dịch đặt cọc xe tại hệ thống OTO NOW</p>
+        
+        <div class="amount" id="so-tien-hien-thi">Đang tải...</div>
+        
+        <button class="btn" onclick="confirmMobilePayment()">XÁC NHẬN TRẢ TIỀN</button>
+    </div>
+
+    <div class="card" id="success-card" style="display: none;">
+        <i class="fas fa-check-circle success-icon" style="display: block;"></i>
+        <h2 style="color: #16a34a;">Thành công!</h2>
+        <p style="color: #64748b;">Đã xác nhận thanh toán. Vui lòng xem thông báo trên màn hình máy tính của bạn.</p>
+    </div>
+
+    <script>
+        // Lấy tất cả dữ liệu từ thanh URL (Mã đơn và Số tiền)
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('order_id');
+        const amount = urlParams.get('amount');
+
+        // Cập nhật số tiền ngay khi tải trang lên
+        document.addEventListener("DOMContentLoaded", function() {
+            const amountElement = document.getElementById('so-tien-hien-thi');
+            
+            if (amount) {
+                // Nếu lấy được số tiền từ URL thì format và in ra
+                const formattedAmount = new Intl.NumberFormat('vi-VN').format(amount) + ' VNĐ';
+                if(amountElement) amountElement.innerText = formattedAmount;
+            } else {
+                // Nếu URL bị lỗi không có số tiền thì dự phòng bằng số mặc định
+                if(amountElement) amountElement.innerText = '50.000.000 VNĐ';
+            }
+        });
+
+        function confirmMobilePayment() {
+            if(!orderId) { alert("Lỗi: Không tìm thấy mã đơn hàng!"); return; }
+            
+            // Đổi hiệu ứng nút bấm thành đang xử lý
+            const btn = document.querySelector('.btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
+            btn.style.pointerEvents = 'none';
+
+            // Bắn tín hiệu "paid" về cho máy tính
+            fetch(`api_payment.php?action=confirm&order_id=${orderId}`)
+            .then(res => res.text())
+            .then(data => {
+                if(data === 'paid') {
+                    // Chuyển giao diện sang Tích xanh thành công
+                    document.getElementById('payment-card').style.display = 'none';
+                    document.getElementById('success-card').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                alert("Lỗi mạng, vui lòng thử lại!");
+                btn.innerHTML = 'XÁC NHẬN TRẢ TIỀN';
+                btn.style.pointerEvents = 'auto';
+            });
+        }
+    </script>
+</body>
+</html>

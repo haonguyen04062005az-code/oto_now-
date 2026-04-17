@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết xe - OTO NOW</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../assets/css/detail.css">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    
+    <style>
+        .detail-page { padding-top: 100px !important; }
+        
+        /* CSS LƯỚI 3 Ô ẢNH THÔNG MINH */
+        .gallery-grid-new {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; width: 100%;
+        }
+        .box-large { grid-column: span 2; height: 350px; }
+        .box-small { height: 200px; }
+        
+        .image-box {
+            border-radius: 16px; background: #f8fafc; border: 1px solid #e2e8f0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; overflow: hidden; transition: 0.3s;
+        }
+        .image-box:hover { opacity: 0.9; transform: scale(0.99); }
+        .image-box img { width: 100%; height: 100%; object-fit: cover; z-index: 5; display: block; }
+        
+        .empty-placeholder { color: #94a3b8; text-align: center; }
+        .empty-placeholder i { font-size: 35px; margin-bottom: 10px; display: block; }
+        
+        /* Hiệu ứng +1, +2... chèn lên ảnh cuối */
+        .more-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); color: white; z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px; font-weight: 800; text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        /* GIAO DIỆN LIGHTBOX PHÓNG TO ẢNH */
+        #lightbox {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(2, 8, 23, 0.95); z-index: 99999;
+            display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px);
+        }
+        #lightbox.active { display: flex; }
+        #lightbox img { max-width: 85%; max-height: 85%; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); object-fit: contain; }
+        
+        .close-btn { position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; cursor: pointer; transition: 0.3s; z-index: 100000; }
+        .close-btn:hover { color: #A1FF14; transform: scale(1.2); }
+        
+        .lb-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,0.1); color: white; border: none;
+            width: 60px; height: 60px; border-radius: 50%; font-size: 24px;
+            cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; z-index: 100000;
+        }
+        .lb-btn:hover { background: #A1FF14; color: #000; }
+        .lb-prev { left: 30px; }
+        .lb-next { right: 30px; }
+        
+        /* KHUNG CÔNG CỤ ADMIN */
+        .admin-tools {
+            background: #fff8f1; border: 2px dashed #f59e0b; border-radius: 12px;
+            padding: 20px; text-align: center; margin-bottom: 20px; display: none;
+        }
+    </style>
+</head>
+<body>
+<script src="/OTO_NOW/header.js"></script>
+<div class="main-container detail-page">
+
+    <div class="top-section">
+        <div class="product-info">
+            <h1 class="car-name-large" id="detail-name">Đang tải thông tin xe...</h1>
+            <div><p class="car-price-large" id="detail-price">--- VNĐ</p></div>
+            <div class="specs-box">
+                <h3>Thông số kỹ thuật</h3>
+                <div class="specs-grid">
+                    <div class="spec-item"><i class="far fa-calendar-alt"></i><span class="label">Năm SX</span><span class="value" id="spec-year">---</span></div>
+                    <div class="spec-item"><i class="fas fa-palette"></i><span class="label">Màu sắc</span><span class="value" id="spec-color">---</span></div>
+                    <div class="spec-item"><i class="fas fa-gas-pump"></i><span class="label">Nhiên liệu</span><span class="value" id="spec-fuel">Cao cấp</span></div>
+                    <div class="spec-item"><i class="fas fa-globe"></i><span class="label">Xuất xứ</span><span class="value" id="spec-country">Nhập khẩu</span></div>
+                    <div class="spec-item"><i class="fas fa-random"></i><span class="label">Hộp số</span><span class="value" id="spec-lotnumber">Tự động</span></div>
+                    <div class="spec-item"><i class="fas fa-chair"></i><span class="label">Số chỗ</span><span class="value" id="spec-seats">5 chỗ</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-visual">
+            <div class="image-wrapper" id="visual-container">
+                <div style="text-align:center; padding: 100px; color: #94A3B8;"><i class="fas fa-spinner fa-spin"></i> Đang tải hình ảnh...</div>
+            </div>
+            <div class="action-buttons">
+                <button id="btn-toggle-view" class="btn-action secondary" style="display: none;" onclick="toggleViewMode()">
+                    <i class="fas fa-image"></i> Xem 2D
+                </button>
+                <button class="btn-action secondary" onclick="openConsultModal()"><i class="fas fa-phone-alt"></i> Tư vấn</button>
+                <button id="btn-dat-coc" class="btn-action primary" onclick="window.location.href='../../dat_coc.html'">
+                    <i class="fas fa-shopping-cart"></i> Đặt cọc
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-container">
+        <div class="detail-section-wrapper">
+            <div class="desc-col">
+                <h3>Mô tả chi tiết</h3>
+                <p id="detail-desc">Đang tải thông tin mô tả...</p>
+                <p>Xe được trang bị đầy đủ các tính năng an toàn tiên tiến nhất. Nội thất bọc da cao cấp, hệ thống giải trí đa phương tiện hiện đại. Cam kết không đâm đụng, không ngập nước.</p>
+            </div>
+            <div class="gallery-col">
+                <h3>Thư viện ảnh xe</h3>
+                
+                <div class="admin-tools" id="admin-gallery-upload">
+                    <p style="margin: 0 0 10px 0; font-weight: 700; color: #b45309;"><i class="fas fa-crown"></i> Khu vực Admin</p>
+                    <input type="file" id="multi-file-upload" accept="image/*" multiple style="display: none;">
+                    <button onclick="document.getElementById('multi-file-upload').click()" style="background: #A1FF14; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(161,255,20,0.3);">
+                        <i class="fas fa-images"></i> Thêm Album Ảnh (Chọn nhiều ảnh cùng lúc)
+                    </button>
+                    <div id="upload-status" style="font-size: 14px; font-weight: bold; margin-top: 10px;"></div>
+                </div>
+
+                <div class="gallery-grid-new" id="gallery-grid-display"></div>
+            </div>
+        </div>
+
+        <div class="related-section">
+            <h3 class="related-title">Có thể bạn quan tâm</h3>
+            <div class="related-grid" id="related-cars-container"></div>
+        </div>
+    </div>
+</div>
+
+<div id="lightbox" onclick="closeLightbox()">
+    <span class="close-btn" onclick="closeLightbox()">&times;</span>
+    <button class="lb-btn lb-prev" onclick="prevLightboxImage(event)">❮</button>
+    <img id="lightbox-img" src="" onclick="event.stopPropagation()">
+    <button class="lb-btn lb-next" onclick="nextLightboxImage(event)">❯</button>
+</div>
+
+<div id="consultModal" class="consult-modal-overlay">
+    <div class="consult-modal-content">
+        <div class="consult-modal-header">
+            <h2><i class="fas fa-headset" style="color: #16A34A; margin-right: 8px;"></i> Yêu cầu tư vấn</h2>
+            <button class="consult-close-btn" onclick="closeConsultModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="consult-modal-body">
+            <div class="consult-form-group">
+                <label class="consult-form-label">Họ và tên *</label>
+                <input type="text" id="consult-name" class="consult-form-input" placeholder="Nhập họ tên của bạn">
+            </div>
+            <div class="consult-form-group">
+                <label class="consult-form-label">Số điện thoại *</label>
+                <input type="text" id="consult-phone" class="consult-form-input" placeholder="09xx xxx xxx">
+            </div>
+            <div class="consult-form-group" style="margin-bottom: 0;">
+                <label class="consult-form-label">Lời nhắn (Tùy chọn)</label>
+                <textarea id="consult-note" class="consult-form-textarea" placeholder="Bạn muốn hỏi thêm về trả góp, lăn bánh, lái thử..."></textarea>
+            </div>
+        </div>
+        <div class="consult-modal-footer">
+            <button class="btn-consult-cancel" onclick="closeConsultModal()">Hủy</button>
+            <button class="btn-consult-submit" onclick="submitConsult()">Gửi yêu cầu <i class="fas fa-paper-plane" style="margin-left: 5px;"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="detail-footer-section">
+    <div class="detail-footer-wrapper">
+        <div class="detail-footer-col brand-col">
+            <h4>OTO Now</h4>
+            <p class="detail-brand-desc">Hệ thống kinh doanh xe sang uy tín hàng đầu Việt Nam.</p>
+        </div>
+        <div class="detail-footer-col">
+            <h4>Hỗ trợ khách hàng</h4>
+            <div class="detail-footer-links">
+                <a href="#">Trung tâm trợ giúp</a>
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+            </div>
+        </div>
+        <div class="detail-footer-col">
+            <h4>Thông tin liên hệ</h4>
+            <div class="detail-footer-links">
+                <a href="#">Hotline: 1900 1234</a>
+                <a href="#">Email: sales@otonow.com</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tắt tính năng tự nhớ vị trí cuộn của trình duyệt
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    // Ép nhảy lên đầu trang ngay lập tức
+    window.scrollTo(0, 0);
+    let currentCarInfo = null;
+    let is3DView = false; 
+    let isAdminAccount = false;
+    let carImagesArray = []; // Mảng chứa ảnh chi tiết (Không chứa ảnh đại diện)
+    let currentLightboxIndex = 0; 
+
+    const safeSetText = (id, text) => { const el = document.getElementById(id); if(el) el.innerText = text; };
+
+    function getCarModel(carName) {
+        if (!carName) return null;
+        const name = carName.toLowerCase();
+        if(name.includes('alfa') || name.includes('arg')) return "../../assets/model/Alfa Romeo Giulia.glb";
+        if(name.includes('audi')) return "../../assets/model/audi_a6_c8_limousine.glb";
+        if(name.includes('lamborghini')) return "../../assets/model/Lamborghini.glb";
+        if(name.includes('range rover') || name.includes('land rover')) return "../../assets/model/Land.glb";
+        if(name.includes('tesla')) return "../../assets/model/Tesla.glb";
+        if(name.includes('vf9')) return "../../assets/model/VF9.glb";
+        if(name.includes('vf3')) return "../../assets/model/Vinfast Vf3.glb";
+        return null;
+    }
+
+    function renderCarDataToScreen(carData) {
+        const formattedPrice = new Intl.NumberFormat('vi-VN').format(carData.gia_ban || 0);
+        
+        // Lấy đúng đường dẫn ảnh đại diện (Cho ảnh chính phía trên)
+        let mainImg = '../../assets/image/placeholder.png';
+        if (carData.hinh_anh && carData.hinh_anh !== 'NULL') mainImg = `../../assets/image/${carData.hinh_anh}`;
+        else if (carData.image && carData.image !== 'NULL') mainImg = carData.image.startsWith('assets') ? `../../${carData.image}` : `../../assets/image/${carData.image}`;
+
+        // 1. TẠO MẢNG ẢNH ALBUM CHI TIẾT (Đã loại bỏ mainImg ra khỏi mảng này)
+        carImagesArray = [];
+
+        if (carData.anh_noi_that && carData.anh_noi_that !== 'NULL') carImagesArray.push(`../../assets/image/${carData.anh_noi_that}`);
+        if (carData.anh_chi_tiet && carData.anh_chi_tiet !== 'NULL') carImagesArray.push(`../../assets/image/${carData.anh_chi_tiet}`);
+
+        if (carData.thu_vien_anh && carData.thu_vien_anh !== 'NULL') {
+            const extraImgs = carData.thu_vien_anh.split(',');
+            extraImgs.forEach(img => {
+                if(img.trim()) carImagesArray.push(`../../assets/image/${img.trim()}`);
+            });
+        }
+
+        // 2. VẼ LƯỚI 3 Ô ẢNH THÔNG MINH
+        const grid = document.getElementById('gallery-grid-display');
+        let html = '';
+
+        // Ô số 1 (To)
+        if (carImagesArray.length > 0) {
+            html += `<div class="image-box box-large" onclick="openLightbox(0)"><img src="${carImagesArray[0]}"></div>`;
+        } else {
+            html += `<div class="image-box box-large" style="opacity:0.4; cursor:default;"><div class="empty-placeholder"><i class="fas fa-image"></i><b>Ảnh ngoại thất</b></div></div>`;
+        }
+
+        // Ô số 2 (Nhỏ trái)
+        if (carImagesArray.length > 1) {
+            html += `<div class="image-box box-small" onclick="openLightbox(1)"><img src="${carImagesArray[1]}"></div>`;
+        } else {
+            html += `<div class="image-box box-small" style="opacity:0.4; cursor:default;"><div class="empty-placeholder"><i class="fas fa-couch"></i><b>Nội thất</b></div></div>`;
+        }
+
+        // Ô số 3 (Nhỏ phải) - Có hiệu ứng đếm số ảnh +1, +2
+        if (carImagesArray.length > 2) {
+            let overlay = '';
+            if (carImagesArray.length > 3) {
+                const remaining = carImagesArray.length - 3;
+                overlay = `<div class="more-overlay">+${remaining}</div>`;
+            }
+            html += `
+                <div class="image-box box-small" onclick="openLightbox(2)">
+                    <img src="${carImagesArray[2]}">
+                    ${overlay}
+                </div>
+            `;
+        } else {
+            html += `<div class="image-box box-small" style="opacity:0.4; cursor:default;"><div class="empty-placeholder"><i class="fas fa-camera"></i><b>Chi tiết</b></div></div>`;
+        }
+
+        grid.innerHTML = html;
+
+        // Cập nhật thông tin chữ và ảnh đại diện phía trên
+        currentCarInfo = {
+            name: carData.ten_xe,
+            price: formattedPrice + ' VNĐ',
+            image: mainImg,
+            model: getCarModel(carData.ten_xe),
+            year: carData.nam_sx || '2024',
+            mau_sac: carData.mau_sac || 'Cơ bản',
+            desc: carData.mo_ta || 'Mẫu xe chất lượng cao, thiết kế khí động học đỉnh cao kết hợp với hiệu suất vượt trội.'
+        };
+        
+        safeSetText('detail-name', currentCarInfo.name);
+        safeSetText('detail-price', 'Giá bán: ' + currentCarInfo.price);
+        safeSetText('spec-year', currentCarInfo.year);
+        safeSetText('spec-color', currentCarInfo.mau_sac);
+        safeSetText('detail-desc', currentCarInfo.desc);
+        
+        // Xử lý nút Xem 3D
+        const btnToggle = document.getElementById('btn-toggle-view');
+        if (currentCarInfo.model) {
+            if(btnToggle) btnToggle.style.display = 'flex';
+            is3DView = false;
+            renderVisualView();
+        } else {
+            if(btnToggle) btnToggle.style.display = 'none';
+            document.getElementById('visual-container').innerHTML = `<img src="${currentCarInfo.image}" class="main-car-img" style="width:100%; height:100%; object-fit:contain;">`;
+        }
+
+        // Xử lý Đặt cọc
+        const btnDatCoc = document.getElementById('btn-dat-coc');
+        if (btnDatCoc) {
+            const soLuong = parseInt(carData.so_luong);
+            if (!isNaN(soLuong) && soLuong <= 0) {
+                btnDatCoc.innerHTML = '<i class="fas fa-ban"></i> Đã bán hết';
+                btnDatCoc.style.background = '#94A3B8';
+                btnDatCoc.style.color = '#ffffff';
+                btnDatCoc.style.cursor = 'not-allowed';
+                btnDatCoc.style.boxShadow = 'none';
+                btnDatCoc.onclick = (e) => { e.preventDefault(); alert("Mẫu xe này đã bán hết!"); return false; };
+            } else {
+                btnDatCoc.onclick = () => { window.location.href = '../../dat_coc.html'; };
+            }
+        }
+    }
+
+    function openLightbox(index) {
+        if (carImagesArray.length === 0) return;
+        currentLightboxIndex = index;
+        updateLightboxImage();
+        document.getElementById('lightbox').classList.add('active');
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    function updateLightboxImage() { document.getElementById('lightbox-img').src = carImagesArray[currentLightboxIndex]; }
+    function prevLightboxImage(e) { e.stopPropagation(); currentLightboxIndex = (currentLightboxIndex - 1 + carImagesArray.length) % carImagesArray.length; updateLightboxImage(); }
+    function nextLightboxImage(e) { e.stopPropagation(); currentLightboxIndex = (currentLightboxIndex + 1) % carImagesArray.length; updateLightboxImage(); }
+
+    function renderVisualView() {
+        const vc = document.getElementById('visual-container');
+        const btn = document.getElementById('btn-toggle-view');
+        if (is3DView) {
+            vc.innerHTML = `<model-viewer src="${currentCarInfo.model}" auto-rotate camera-controls shadow-intensity="1.5" class="xe-3d-model" style="width:100%; height:400px;"></model-viewer>`;
+            if(btn) btn.innerHTML = '<i class="fas fa-image"></i> Xem 2D';
+        } else {
+            vc.innerHTML = `<img src="${currentCarInfo.image}" class="main-car-img" style="width:100%; height:100%; object-fit:contain;">`;
+            if(btn) btn.innerHTML = '<i class="fas fa-cube"></i> Xem 3D';
+        }
+    }
+    function toggleViewMode() { is3DView = !is3DView; renderVisualView(); }
+
+    document.addEventListener("DOMContentLoaded", async function() {
+        const userSession = localStorage.getItem("currentUser");
+        const authSection = document.getElementById('auth-section');
+        
+        if (userSession) {
+            const user = JSON.parse(userSession);
+            
+            let adminMenuHtml = '';
+            if (user.email === "admin@otonow.com") {
+                isAdminAccount = true;
+                // Hiện nút Tải ảnh cho Admin
+                const adminUpload = document.getElementById('admin-gallery-upload');
+                if(adminUpload) adminUpload.style.display = 'block'; 
+                
+                adminMenuHtml = `
+                    <a href="../../dashboard.html" class="dropdown-item" style="color: #b45309; font-weight: 700; background: #fffbeb; border-bottom: 1px solid #fde68a;">
+                        <i class="fas fa-crown" style="color: #f59e0b; width: 20px;"></i> Quản trị hệ thống
+                    </a>`;
+            }
+
+            if(authSection) {
+                authSection.innerHTML = `
+                    <div class="user-account-box">
+                        <div class="user-info-text"><span class="user-name-text">${user.name}</span></div>
+                        <div class="user-avatar-circle"><i class="fas fa-user"></i></div>
+                        <div class="dropdown-menu">
+                            ${adminMenuHtml}
+                            <a href="#" class="dropdown-item"><i class="fas fa-id-card" style="width: 20px;"></i> Hồ sơ cá nhân</a>
+                            <a href="#" class="dropdown-item logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt" style="width: 20px;"></i> Đăng xuất</a>
+                        </div>
+                    </div>`;
+            }
+        } else {
+            if(authSection) {
+                authSection.innerHTML = `<a href="../../pages/auth/GD_dangnhap.html" class="btn-login-header">Đăng nhập</a>`;
+            }
+        }
+        
+        const selectedCarKey = localStorage.getItem('selectedCar');
+        if (!selectedCarKey) return;
+
+        let fetchUrl = selectedCarKey.startsWith('CAR-') 
+            ? `../../api_get_car_detail.php?id=${selectedCarKey.replace('CAR-', '')}`
+            : `../../api_get_car_detail.php?name=${encodeURIComponent(selectedCarKey)}`;
+
+        try {
+            const response = await fetch(fetchUrl);
+            const data = await response.json();
+            if (!data.error) renderCarDataToScreen(data); 
+        } catch (error) { console.error("Lỗi:", error); }
+
+        // MỤC GỢI Ý XE (FIX LỖI ẢNH)
+        const relatedContainer = document.getElementById('related-cars-container');
+        if(relatedContainer) {
+            fetch('../../api_get_cars.php')
+                .then(res => res.json())
+                .then(cars => {
+                    if (!Array.isArray(cars)) return;
+                    const shuffledCars = cars.sort(() => 0.5 - Math.random());
+                    let count = 0;
+                    shuffledCars.forEach(car => {
+                        if (car.id.toString() !== selectedCarKey.replace('CAR-', '') && count < 4) {
+                            
+                            // LOGIC SỬA LỖI ẢNH XE CŨ VÀ MỚI
+                            let img = '../../assets/image/placeholder.png';
+                            if (car.hinh_anh && car.hinh_anh !== 'NULL') {
+                                img = `../../assets/image/${car.hinh_anh}`;
+                            } else if (car.image && car.image !== 'NULL') {
+                                img = car.image.startsWith('assets') ? `../../${car.image}` : `../../assets/image/${car.image}`;
+                            }
+
+                            relatedContainer.innerHTML += `
+                                <div class="mini-car-card" onclick="goToDetail('CAR-${car.id}')">
+                                    <div class="mini-car-img-box">
+                                        <img src="${img}" style="width:100%; height:100%; object-fit:contain;" onerror="this.src='../../assets/image/placeholder.png'">
+                                    </div>
+                                    <div class="mini-car-info">
+                                        <div class="mini-car-name">${car.ten_xe}</div>
+                                        <div class="mini-car-price" style="color:#15803d; font-weight:bold;">${new Intl.NumberFormat('vi-VN').format(car.gia_ban)} VNĐ</div>
+                                    </div>
+                                </div>`;
+                            count++;
+                        }
+                    });
+                });
+        }
+    });
+
+    function goToDetail(carId) { 
+        localStorage.setItem('selectedCar', carId); 
+        // Thay vì dùng reload() gây lưu vị trí cũ, ta load lại trang như một link mới tinh
+        window.location.href = window.location.pathname; 
+    }
+    function openConsultModal() { document.getElementById('consultModal').classList.add('show'); }
+    function closeConsultModal() { document.getElementById('consultModal').classList.remove('show'); }
+    function submitConsult() { alert("Yêu cầu đã gửi thành công!"); closeConsultModal(); }
+
+    document.getElementById('multi-file-upload').addEventListener('change', async function(e) {
+        if(!this.files || this.files.length === 0) return;
+        const carId = localStorage.getItem('selectedCar');
+        const formData = new FormData();
+        formData.append('car_id', carId);
+        
+        for (let i = 0; i < this.files.length; i++) { formData.append('gallery_images[]', this.files[i]); }
+        
+        const statusText = document.getElementById('upload-status');
+        statusText.style.color = '#d97706';
+        statusText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên...';
+        document.body.style.cursor = 'wait';
+        
+        try {
+            const res = await fetch('../../api_upload_gallery.php', { method: 'POST', body: formData });
+            const result = await res.json();
+            
+            if(result.status === 'success') {
+                statusText.style.color = '#16a34a';
+                statusText.innerHTML = '<i class="fas fa-check-circle"></i> ' + result.message + ' Đang tải lại...';
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                statusText.style.color = 'red'; statusText.innerText = 'Lỗi: ' + result.message;
+            }
+        } catch(e) { 
+            statusText.style.color = 'red'; statusText.innerText = 'Lỗi kết nối máy chủ!';
+        }
+        document.body.style.cursor = 'default'; this.value = ''; 
+    });
+    // Quản lý Menu 3 gạch & Đăng xuất
+    document.addEventListener("click", function(event) {
+        const menuBtn = event.target.closest('.menu-btn');
+        const dropDown = document.querySelector('.main-dropdown-menu');
+        if (menuBtn) {
+            if(dropDown) dropDown.classList.toggle('show');
+        } else if (dropDown && !event.target.closest('.main-dropdown-menu')) {
+            dropDown.classList.remove('show');
+        }
+    });
+
+    function handleLogout() { 
+        localStorage.removeItem("currentUser"); 
+        window.location.reload(); 
+    }
+</script>
+
+</body>
+</html>

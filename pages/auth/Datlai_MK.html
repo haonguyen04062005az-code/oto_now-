@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt lại mật khẩu - OTONOW</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="../../index.html">
+                <img class="logo-img" src="../../assets/image/logo.png" alt="OTONOW">
+            </a>
+        </div>
+        <div class="header-tools">
+            <span style="margin: 0 10px; font-weight: 600; color: #64748B;">EN / DE</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="left-panel">
+            <div class="form-wrapper">
+                <h1>Đặt mật khẩu mới</h1>
+                <p class="subtitle">Hãy nhập mật khẩu mới dễ nhớ nhé.</p>
+                
+                <form id="resetForm">
+                    <div class="input-group">
+                        <label for="new-pass">Mật khẩu mới</label>
+                        <input type="password" id="new-pass" placeholder="Nhập mật khẩu mới">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="re-pass">Xác nhận mật khẩu</label>
+                        <input type="password" id="re-pass" placeholder="Nhập lại mật khẩu mới">
+                        <span class="error-msg" id="pass-error"></span>
+                    </div>
+
+                    <button type="submit" class="btn-login">Cập nhật mật khẩu</button>
+                </form>
+
+                <p class="register-link">
+                    <a href="GD_dangnhap.html">Quay lại đăng nhập</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="testimonial-box">
+                <p class="quote">“In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document...”</p>
+                
+                <div class="box-footer">
+                    <div class="author-info">
+                        <h3>Sam Kolder</h3>
+                        <p>Los Angeles, California, USA</p>
+                    </div>
+
+                    <div class="right-actions">
+                        <div class="rating">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('resetForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Chặn load lại trang
+
+            const pass1 = document.getElementById('new-pass').value;
+            const pass2 = document.getElementById('re-pass').value;
+            const passField2 = document.getElementById('re-pass');
+            const errorMsg = document.getElementById('pass-error');
+            const submitBtn = document.querySelector('.btn-login');
+
+            // Reset trạng thái lỗi
+            passField2.classList.remove('error');
+            errorMsg.innerText = "";
+            errorMsg.classList.remove('show');
+
+            // 1. Kiểm tra rỗng
+            if (!pass1 || !pass2) {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+
+            // 2. Kiểm tra độ dài
+            if (pass1.length < 6) {
+                alert("Mật khẩu phải có ít nhất 6 ký tự!");
+                return;
+            }
+
+            // 3. Kiểm tra khớp mật khẩu
+            if (pass1 !== pass2) {
+                passField2.classList.add('error');
+                errorMsg.innerText = "Mật khẩu xác nhận không khớp!";
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            // 4. [QUAN TRỌNG] CẬP NHẬT MẬT KHẨU VÀO LOCALSTORAGE
+            // (Thay vì gửi sang PHP lỗi, ta lưu thẳng vào trình duyệt)
+            
+            // Hiệu ứng đang xử lý
+            submitBtn.innerText = "Đang cập nhật...";
+            submitBtn.disabled = true;
+
+            fetch('reset_password.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ password: pass1 })
+            })
+            .then(res => res.json())
+            .then(data => {
+                submitBtn.innerText = 'Cập nhật mật khẩu';
+                submitBtn.disabled = false;
+                if (data.status === 'success') {
+                    alert('Đổi mật khẩu thành công! Vui lòng đăng nhập lại.');
+                    window.location.href = 'GD_dangnhap.html';
+                } else {
+                    alert(data.message || 'Đổi mật khẩu thất bại.');
+                }
+            })
+            .catch(() => {
+                submitBtn.innerText = 'Cập nhật mật khẩu';
+                submitBtn.disabled = false;
+                alert('Lỗi kết nối máy chủ. Vui lòng thử lại.');
+            });
+        });
+    </script>
+</body>
+</html>
