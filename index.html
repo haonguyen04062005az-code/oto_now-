@@ -615,11 +615,26 @@
                         }
                         
                         const soLuong = parseInt(car.so_luong);
-                        const isSoldOut = (!isNaN(soLuong) && soLuong <= 0);
+        const isSoldOut = (!isNaN(soLuong) && soLuong <= 0);
 
-                        const badgeHtml = isSoldOut 
-                            ? `<div class="badge-hot" style="background:#64748B; color: white; border: none; box-shadow: none;">Hết hàng</div>`
-                            : `<div class="badge-hot" style="background:${catInfo.color}; color: white;">${catInfo.badge}</div>`;
+        // Khởi tạo tên tem mặc định
+        let dynamicBadge = catInfo.badge;
+        
+        // Tự động bắt từ khóa trong Database để đổi tên Tem
+        if (car.phan_loai) {
+            const phanLoaiStr = car.phan_loai.toLowerCase();
+            if (phanLoaiStr.includes('xe điện') || phanLoaiStr.includes('xe dien') || phanLoaiStr.includes('điện')) {
+                dynamicBadge = 'XE ĐIỆN';
+            } else if (phanLoaiStr.includes('gia đình') || phanLoaiStr.includes('gia dinh')) {
+                dynamicBadge = 'GIA ĐÌNH';
+            } else if (phanLoaiStr.includes('nổi bật')) {
+                dynamicBadge = 'NỔI BẬT';
+            }
+        }
+
+        const badgeHtml = isSoldOut 
+            ? `<div class="badge-hot" style="background:#64748B; color: white; border: none; box-shadow: none;">HẾT HÀNG</div>`
+            : `<div class="badge-hot" style="background:${catInfo.color}; color: white; font-weight: 800;">${dynamicBadge}</div>`;
 
                         const imgStyle = isSoldOut ? 'style="filter: grayscale(100%); opacity: 0.5;"' : '';
                         const titleStyle = isSoldOut ? 'style="color: #94A3B8;"' : '';
