@@ -13,20 +13,29 @@
     <link rel="stylesheet" href="../../assets/css/admin/dashboard.css"> 
 </head>
 <script>
-    // BẢO VỆ GIAO DIỆN ADMIN - KHÔNG CÓ QUYỀN SẼ BỊ ĐUỔI VỀ TRANG CHỦ
-    const STRICT_ADMIN_EMAIL = "admin@otonow.com"; // Điền đúng email admin của bạn
+    // BẢO VỆ GIAO DIỆN ADMIN BẰNG KẾT NỐI TRỰC TIẾP VỚI SERVER
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch('/OTO_NOW/check_session.php')
+            .then(res => res.json())
+            .then(data => {
+                if (data.status !== 'loggedin') {
+                    alert("Vui lòng đăng nhập!");
+                    window.location.href = "/OTO_NOW/pages/auth/GD_dangnhap.html";
+                } 
+                else {
+                    const STRICT_ADMIN_EMAIL = "admin@otonow.com"; 
 
-    const checkSession = localStorage.getItem("currentUser");
-    if (!checkSession) {
-        alert("Vui lòng đăng nhập!");
-        window.location.href = "index.html"; // Chú ý: Sửa lại đường dẫn index.html cho đúng nếu file admin nằm trong thư mục con
-    } else {
-        const userCheck = JSON.parse(checkSession);
-        if (userCheck.email !== STRICT_ADMIN_EMAIL) {
-            alert("Cảnh báo: Bạn không có quyền truy cập vào khu vực Quản trị!");
-            window.location.href = "index.html"; // Đuổi về trang chủ
-        }
-    }
+                    // Kiểm tra cực nghiêm ngặt: Email và Role từ Server gửi về
+                    if (data.email !== STRICT_ADMIN_EMAIL && data.role !== 'admin' && data.role !== 'Admin') {
+                        alert("Cảnh báo: Bạn không có quyền truy cập vào khu vực Quản trị!");
+                        window.location.href = "/OTO_NOW/index.html";
+                    }
+                }
+            })
+            .catch(err => {
+                window.location.href = "/OTO_NOW/index.html";
+            });
+    });
 </script>
 <body>
     <div class="app-container">

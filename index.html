@@ -68,6 +68,26 @@
         body.focus-mode .slider-wrapper.expanded {
             display: block !important; 
         }
+        /* CSS Dự phòng cho FAQ nếu file style.css chưa có */
+        .faq-item .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease;
+            padding: 0 20px;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px; /* Chiều cao tối đa khi mở ra */
+            padding: 15px 20px;
+        }
+
+        .faq-item .faq-question i {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg); /* Xoay mũi tên ngược lên khi mở */
+        }
     </style>
 </head>
 <body>
@@ -766,6 +786,28 @@
                 if(replyIndex < botReplies.length - 1) { replyIndex++; }
             }, 1500);
         }
+    // ================= XỬ LÝ HIỆU ỨNG CLICK HỎI ĐÁP (FAQ) =================
+    document.addEventListener("DOMContentLoaded", function() {
+        const faqQuestions = document.querySelectorAll('.faq-question');
+
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                // Lấy phần tử cha bọc ngoài câu hỏi
+                const faqItem = this.parentElement;
+
+                // Tùy chọn: Nếu muốn khi mở 1 câu, các câu khác tự động đóng lại cho gọn
+                const allFaqItems = document.querySelectorAll('.faq-item');
+                allFaqItems.forEach(item => {
+                    if (item !== faqItem) {
+                        item.classList.remove('active');
+                    }
+                });
+
+                // Bật/tắt class 'active' cho câu hỏi đang được click
+                faqItem.classList.toggle('active');
+            });
+        });
+    });
     </script>
 </body>
 </html>

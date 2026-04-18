@@ -111,20 +111,24 @@
                 btn.innerText = 'Đăng nhập';
                 btn.disabled = false;
                 if (data.status === 'success') {
+                    // LƯU NGAY VÀO TRÌNH DUYỆT ĐỂ KHÔNG BỊ TRỄ NHỊP
+                    localStorage.setItem("currentUser", JSON.stringify({
+                        name: data.username, 
+                        email: email
+                    }));
+
                     alert('Đăng nhập thành công!');
-                    if (data.role === 'admin') {
+                    
+                    // NẾU ĐÚNG EMAIL HOẶC QUYỀN LÀ ADMIN -> BAY THẲNG VÀO DASHBOARD
+                    if (data.role === 'admin' || data.role === 'Admin' || email === 'admin@otonow.com') {
                         window.location.href = '../admin/dashboard.html';
                     } else {
                         window.location.href = '../../index.html';
                     }
                 } else {
-                    if (data.field === 'email') {
-                        alert(data.message || 'Email không hợp lệ');
-                    } else if (data.field === 'password') {
-                        alert(data.message || 'Mật khẩu sai');
-                    } else {
-                        alert(data.message || 'Đăng nhập thất bại');
-                    }
+                    if (data.field === 'email') alert(data.message || 'Email không hợp lệ');
+                    else if (data.field === 'password') alert(data.message || 'Mật khẩu sai');
+                    else alert(data.message || 'Đăng nhập thất bại');
                 }
             })
             .catch(() => {
@@ -135,9 +139,12 @@
         }
 
         function handleGoogleLogin() {
-            // Redirect đến trang đăng nhập Google
             window.location.href = 'gg_dn.html';
         }
+
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') handleLogin(e);
+        });
 
         document.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
