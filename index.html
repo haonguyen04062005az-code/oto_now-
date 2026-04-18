@@ -132,19 +132,10 @@
                     </div>
                     
                     <div class="filter-box">
-                        <select id="brandSelect">
-                            <option value="all">Tất cả hãng xe</option>
-                            <option value="alfa-romeo">Alfa Romeo</option>
-                            <option value="audi">Audi</option>
-                            <option value="bmw">BMW</option>
-                            <option value="ferrari">Ferrari</option>
-                            <option value="ford">Ford</option>
-                            <option value="lamborghini">Lamborghini</option>
-                            <option value="land-rover">Land Rover</option>
-                            <option value="nissan">Nissan</option>
-                            <option value="vinfast">VinFast</option>
-                        </select>
-                    </div>
+    <select id="brandSelect">
+        <option value="all">Tất cả hãng xe</option>
+        </select>
+</div>
 
                     <div class="filter-box">
                         <select id="priceSelect">
@@ -340,7 +331,7 @@
                 </div>
             </div>
             <div class="detail-footer-col">
-                <h4>Thông hotline</h4>
+                <h4>Thông tin hotline</h4>
                 <div class="detail-footer-links">
                     <a href="#">Hotline: 1900 1234</a>
                     <a href="#">Email: sales@otonow.com</a>
@@ -558,26 +549,42 @@
             try {
                 const response = await fetch('api_get_cars.php');
                 const textData = await response.text(); 
-                
-                let carsData = [];
-                try {
-                    carsData = JSON.parse(textData);
-                } catch (jsonError) {
-                    console.error("Dữ liệu trả về không phải JSON:", textData);
-                    document.getElementById('carList3').innerHTML = `<p style="color:red; text-align:center; width:100%; padding:20px;">Lỗi kết nối CSDL (Lỗi cú pháp PHP). Mở F12 Console để xem chi tiết.</p>`;
-                    return;
+                let carsData = JSON.parse(textData);
+
+                // ================= 1. TỰ ĐỘNG TÁCH HÃNG XE TỪ TÊN =================
+                function extractBrand(carName) {
+                    if (!carName) return "Khác";
+                    let name = carName.trim().toUpperCase();
+                    // Xử lý các hãng có 2 chữ
+                    if (name.startsWith("LAND ROVER")) return "Land Rover";
+                    if (name.startsWith("ROLLS-ROYCE") || name.startsWith("ROLLS ROYCE")) return "Rolls-Royce";
+                    if (name.startsWith("ALFA ROMEO")) return "Alfa Romeo";
+                    if (name.startsWith("ASTON MARTIN")) return "Aston Martin";
+                    if (name.startsWith("MERCEDES")) return "Mercedes-Benz";
+                    // Mặc định lấy chữ cái đầu tiên làm hãng
+                    let firstWord = name.split(" ")[0];
+                    return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase();
                 }
 
-                if (carsData.error) {
-                    document.getElementById('carList3').innerHTML = `<p style="color:red; text-align:center; width:100%; padding:20px;">Lỗi MySQL: ${carsData.error}</p>`;
-                    return;
-                }
+                const brandSelect = document.getElementById('brandSelect');
+                // Quét toàn bộ xe để lấy ra danh sách Hãng duy nhất
+                const uniqueBrands = [...new Set(carsData.map(car => extractBrand(car.ten_xe)))].sort();
 
-                if (!Array.isArray(carsData)) {
-                    document.getElementById('carList3').innerHTML = `<p style="color:red; text-align:center; width:100%; padding:20px;">Lỗi: Dữ liệu bị sai cấu trúc.</p>`;
-                    return;
+                // Reset và thêm lại các hãng xe vào Select box
+                if (brandSelect) {
+                    brandSelect.innerHTML = '<option value="all">Tất cả hãng xe</option>';
+                    uniqueBrands.forEach(brand => {
+                        if (brand && brand !== 'NULL' && brand !== 'Khác') {
+                            const option = document.createElement('option');
+                            option.value = brand.toLowerCase().replace(/\s+/g, '-'); // VD: "Land Rover" -> "land-rover"
+                            option.textContent = brand;
+                            brandSelect.appendChild(option);
+                        }
+                    });
                 }
+                // ==================================================================
 
+                // --- 2. RENDER XE NHƯ BÌNH THƯỜNG ---
                 const categories = {
                     'carList':  { tags: ['Xe nổi bật'], badge: 'Nổi bật', color: '#EF4444' },
                     'carList2': { tags: ['Xe bán chạy'], badge: 'Bán chạy', color: '#2563EB' },
@@ -615,46 +622,40 @@
                         }
                         
                         const soLuong = parseInt(car.so_luong);
-        const isSoldOut = (!isNaN(soLuong) && soLuong <= 0);
+                        const isSoldOut = (!isNaN(soLuong) && soLuong <= 0);
 
-        // Khởi tạo tên tem mặc định
-        let dynamicBadge = catInfo.badge;
-        
-        // Tự động bắt từ khóa trong Database để đổi tên Tem
-        if (car.phan_loai) {
-            const phanLoaiStr = car.phan_loai.toLowerCase();
-            if (phanLoaiStr.includes('xe điện') || phanLoaiStr.includes('xe dien') || phanLoaiStr.includes('điện')) {
-                dynamicBadge = 'XE ĐIỆN';
-            } else if (phanLoaiStr.includes('gia đình') || phanLoaiStr.includes('gia dinh')) {
-                dynamicBadge = 'GIA ĐÌNH';
-            } else if (phanLoaiStr.includes('nổi bật')) {
-                dynamicBadge = 'NỔI BẬT';
-            }
-        }
+                        // Đổi tên Tem thông minh
+                        let dynamicBadge = catInfo.badge;
+                        if (car.phan_loai) {
+                            const phanLoaiStr = car.phan_loai.toLowerCase();
+                            if (phanLoaiStr.includes('xe điện') || phanLoaiStr.includes('xe dien') || phanLoaiStr.includes('điện')) {
+                                dynamicBadge = 'XE ĐIỆN';
+                            } else if (phanLoaiStr.includes('gia đình') || phanLoaiStr.includes('gia dinh')) {
+                                dynamicBadge = 'GIA ĐÌNH';
+                            } else if (phanLoaiStr.includes('nổi bật')) {
+                                dynamicBadge = 'NỔI BẬT';
+                            }
+                        }
 
-        const badgeHtml = isSoldOut 
-            ? `<div class="badge-hot" style="background:#64748B; color: white; border: none; box-shadow: none;">HẾT HÀNG</div>`
-            : `<div class="badge-hot" style="background:${catInfo.color}; color: white; font-weight: 800;">${dynamicBadge}</div>`;
+                        const badgeHtml = isSoldOut 
+                            ? `<div class="badge-hot" style="background:#64748B; color: white; border: none; box-shadow: none;">HẾT HÀNG</div>`
+                            : `<div class="badge-hot" style="background:${catInfo.color}; color: white; font-weight: 800;">${dynamicBadge}</div>`;
 
                         const imgStyle = isSoldOut ? 'style="filter: grayscale(100%); opacity: 0.5;"' : '';
                         const titleStyle = isSoldOut ? 'style="color: #94A3B8;"' : '';
                         const priceStyle = isSoldOut ? 'style="color: #94A3B8; text-decoration: line-through;"' : '';
 
-                        let brand = 'all', fuel = 'all';
                         const tenXeLower = (car.ten_xe || '').toLowerCase();
-                        if (tenXeLower.includes('alfa')) { brand = 'alfa-romeo'; fuel = 'petrol'; }
-                        else if (tenXeLower.includes('lamborghini')) { brand = 'lamborghini'; fuel = 'petrol'; }
-                        else if (tenXeLower.includes('ferrari')) { brand = 'ferrari'; fuel = 'hybrid'; }
-                        else if (tenXeLower.includes('nissan')) { brand = 'nissan'; fuel = 'petrol'; }
-                        else if (tenXeLower.includes('audi')) { brand = 'audi'; fuel = 'petrol'; }
-                        else if (tenXeLower.includes('land rover')) { brand = 'land-rover'; fuel = 'hybrid'; }
-                        else if (tenXeLower.includes('bmw')) { brand = 'bmw'; fuel = 'petrol'; }
-                        else if (tenXeLower.includes('ford')) { brand = 'ford'; fuel = 'petrol'; }
-                        else if (tenXeLower.includes('tesla')) { brand = 'tesla'; fuel = 'electric'; }
-                        else if (tenXeLower.includes('vinfast')) { brand = 'vinfast'; fuel = 'electric'; }
                         
-                        let checkPhanLoai = car.phan_loai || '';
-                        if (checkPhanLoai.includes('Xe điện')) fuel = 'electric';
+                        // ================= 3. GÁN BỘ LỌC TỰ ĐỘNG =================
+                        // Lấy chính xác tên hãng vừa tạo ở trên để gán vào thẻ xe (thay vì if-else bằng tay)
+                        const brand = extractBrand(car.ten_xe).toLowerCase().replace(/\s+/g, '-');
+                        
+                        // Giữ lại một chút logic nhiên liệu mặc định để bộ lọc nhiên liệu vẫn hoạt động tốt
+                        let fuel = 'petrol';
+                        if (tenXeLower.includes('ferrari') || tenXeLower.includes('land rover') || tenXeLower.includes('lexus')) fuel = 'hybrid';
+                        if (tenXeLower.includes('tesla') || tenXeLower.includes('vinfast') || (car.phan_loai && car.phan_loai.toLowerCase().includes('điện'))) fuel = 'electric';
+                        // =========================================================
 
                         const html = `
                             <div class="car-card" onclick="goToDetail('CAR-${car.id}')" 

@@ -108,9 +108,10 @@
     <div class="bottom-container">
         <div class="detail-section-wrapper">
             <div class="desc-col">
-                <h3>Mô tả chi tiết</h3>
-                <p id="detail-desc">Đang tải thông tin mô tả...</p>
-                <p>Xe được trang bị đầy đủ các tính năng an toàn tiên tiến nhất. Nội thất bọc da cao cấp, hệ thống giải trí đa phương tiện hiện đại. Cam kết không đâm đụng, không ngập nước.</p>
+                <h3 style="border-left: 4px solid #A1FF14; padding-left: 10px; line-height: 1.2;">Mô tả chi tiết</h3>
+                <div id="detail-desc" style="line-height: 1.8; color: #475569; text-align: justify;">
+                    Đang tải thông tin mô tả...
+                </div>
             </div>
             <div class="gallery-col">
                 <h3>Thư viện ảnh xe</h3>
@@ -185,7 +186,7 @@
                 </div>
             </div>
             <div class="detail-footer-col">
-                <h4>Thông hotline</h4>
+                <h4>Thông tin hotline</h4>
                 <div class="detail-footer-links">
                     <a href="#">Hotline: 1900 1234</a>
                     <a href="#">Email: sales@otonow.com</a>
@@ -292,15 +293,28 @@
             model: getCarModel(carData.ten_xe),
             year: carData.nam_sx || '2024',
             mau_sac: carData.mau_sac || 'Cơ bản',
-            desc: carData.mo_ta || 'Mẫu xe chất lượng cao, thiết kế khí động học đỉnh cao kết hợp với hiệu suất vượt trội.'
+            
         };
         
         safeSetText('detail-name', currentCarInfo.name);
         safeSetText('detail-price', 'Giá bán: ' + currentCarInfo.price);
         safeSetText('spec-year', currentCarInfo.year);
         safeSetText('spec-color', currentCarInfo.mau_sac);
-        safeSetText('detail-desc', currentCarInfo.desc);
+        let moTaXe = carData.mo_ta;
+        if (!moTaXe || moTaXe === 'NULL' || moTaXe.trim() === '') {
+            moTaXe = `Chiếc xe này là sự kết hợp hoàn hảo giữa ngôn ngữ thiết kế đẳng cấp và hiệu năng vượt trội, mang đến trải nghiệm lái đầy cảm xúc. Mọi chi tiết từ trong ra ngoài đều được chăm chút tỉ mỉ nhằm tôn vinh vị thế của chủ nhân.<br><br>
+            <strong style="color: #0F172A;">✓ Ngoại thất:</strong> Sang trọng, cuốn hút với những đường gân dập nổi tối ưu khí động học.<br>
+            <strong style="color: #0F172A;">✓ Nội thất:</strong> Không gian khoang lái xa hoa, sử dụng vật liệu bọc da cao cấp, tích hợp hệ thống giải trí đa phương tiện thế hệ mới.<br>
+            <strong style="color: #0F172A;">✓ Vận hành & An toàn:</strong> Động cơ mạnh mẽ, bền bỉ đi kèm hàng loạt công nghệ an toàn chủ động tiên tiến nhất.<br><br>
+            <em style="color: #16A34A; font-weight: 600;">* OTO NOW cam kết xe nguyên bản, lịch sử bảo dưỡng rõ ràng.</em>`;
+        } else {
+            // Nếu Database có bài viết, chuyển các dấu xuống dòng (Enter) thành thẻ <br> để HTML hiểu
+            moTaXe = moTaXe.replace(/\n/g, '<br>');
+        }
         
+        // Đổ văn bản vào màn hình (Dùng innerHTML để giữ được các thẻ <strong>, <br>)
+        const descEl = document.getElementById('detail-desc');
+        if (descEl) descEl.innerHTML = moTaXe;
         // Xử lý nút Xem 3D
         const btnToggle = document.getElementById('btn-toggle-view');
         if (currentCarInfo.model) {
