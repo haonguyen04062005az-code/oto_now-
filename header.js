@@ -133,7 +133,7 @@ if (authSection) {
                         <div class="user-avatar-circle"><i class="fas fa-user"></i></div>
                         <div class="dropdown-menu">
                             ${adminMenuHtml}
-                            <a href="#" class="dropdown-item"><i class="fas fa-id-card" style="width: 20px;"></i> Hồ sơ cá nhân</a>
+                            <a href="/OTO_NOW/ho_so.html" class="dropdown-item"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a>
                             <a href="#" class="dropdown-item logout-btn" onclick="handleLogout(event)"><i class="fas fa-sign-out-alt" style="width: 20px;"></i> Đăng xuất</a>
                         </div>
                     </div>`;

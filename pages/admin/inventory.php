@@ -2,14 +2,6 @@
 $conn = new mysqli("localhost", "root", "", "otonow_db");
 $conn->set_charset("utf8");
 
-// =====================================================================
-// TỰ ĐỘNG NÂNG CẤP DATABASE
-// =====================================================================
-@$conn->query("ALTER TABLE kho_xe ADD COLUMN model VARCHAR(100) AFTER ten_xe");
-@$conn->query("ALTER TABLE kho_xe ADD COLUMN hinh_anh VARCHAR(255) AFTER so_luong");
-@$conn->query("ALTER TABLE kho_xe ADD COLUMN mo_hinh_3d VARCHAR(255) AFTER hinh_anh"); 
-@$conn->query("ALTER TABLE kho_xe ADD COLUMN phan_loai VARCHAR(255) AFTER mo_hinh_3d");
-
 // Xuất Excel
 if (isset($_GET['action']) && $_GET['action'] == 'export') {
     header("Content-Type: application/vnd.ms-excel; charset=utf-8");

@@ -138,6 +138,11 @@
 
 <div id="lightbox" onclick="closeLightbox()">
     <span class="close-btn" onclick="closeLightbox()">&times;</span>
+    
+    <button id="btn-delete-lb" onclick="deleteCurrentImage(event)" style="position: absolute; top: 20px; right: 100px; background: #EF4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; z-index: 100000; display: none; box-shadow: 0 4px 10px rgba(239,68,68,0.4);">
+        <i class="fas fa-trash"></i> Xóa ảnh này
+    </button>
+
     <button class="lb-btn lb-prev" onclick="prevLightboxImage(event)">❮</button>
     <img id="lightbox-img" src="" onclick="event.stopPropagation()">
     <button class="lb-btn lb-next" onclick="nextLightboxImage(event)">❯</button>
@@ -387,10 +392,11 @@
                 const adminUpload = document.getElementById('admin-gallery-upload');
                 if(adminUpload) adminUpload.style.display = 'block'; 
                 
-                adminMenuHtml = `
-                    <a href="../../dashboard.html" class="dropdown-item" style="color: #b45309; font-weight: 700; background: #fffbeb; border-bottom: 1px solid #fde68a;">
-                        <i class="fas fa-crown" style="color: #f59e0b; width: 20px;"></i> Quản trị hệ thống
-                    </a>`;
+                // HIỆN NÚT XÓA ẢNH TRONG LIGHTBOX
+                const btnDeleteLb = document.getElementById('btn-delete-lb');
+                if(btnDeleteLb) btnDeleteLb.style.display = 'block';
+
+                adminMenuHtml = `... (code cũ giữ nguyên)`;
             }
 
             if(authSection) {
@@ -468,7 +474,25 @@
     }
     function openConsultModal() { document.getElementById('consultModal').classList.add('show'); }
     function closeConsultModal() { document.getElementById('consultModal').classList.remove('show'); }
-    function submitConsult() { alert("Yêu cầu đã gửi thành công!"); closeConsultModal(); }
+    function submitConsult() { 
+        const name = document.getElementById('consult-name').value.trim();
+        const phone = document.getElementById('consult-phone').value.trim();
+        
+        // KIỂM TRA ĐIỀU KIỆN
+        if (name === "" || phone === "") {
+            alert("Vui lòng nhập đầy đủ Họ tên và Số điện thoại trước khi gửi!");
+            return; // Dừng lại, không cho gửi
+        }
+        
+        // NẾU ĐÃ NHẬP ĐỦ THÌ MỚI BÁO THÀNH CÔNG
+        alert("Yêu cầu của bạn đã được gửi thành công! Chuyên viên OTO NOW sẽ liên hệ lại sớm nhất."); 
+        closeConsultModal(); 
+        
+        // Xóa trắng form để chuẩn bị cho lần nhập sau
+        document.getElementById('consult-name').value = '';
+        document.getElementById('consult-phone').value = '';
+        document.getElementById('consult-note').value = '';
+    }
 
     document.getElementById('multi-file-upload').addEventListener('change', async function(e) {
         if(!this.files || this.files.length === 0) return;
@@ -513,6 +537,42 @@
     function handleLogout() { 
         localStorage.removeItem("currentUser"); 
         window.location.reload(); 
+    }
+    // ================= HÀM XÓA ẢNH TRONG LIGHTBOX =================
+    async function deleteCurrentImage(event) {
+        event.stopPropagation(); // Ngăn việc click làm đóng luôn màn hình đen
+        
+        if (!confirm("⚠️ Bạn có chắc chắn muốn xóa vĩnh viễn ảnh này khỏi hệ thống không?")) return;
+
+        const carId = localStorage.getItem('selectedCar');
+        const currentImgPath = carImagesArray[currentLightboxIndex];
+        const fileName = currentImgPath.split('/').pop(); // Lọc lấy mỗi tên file (VD: xe_audi.jpg)
+
+        const btnDelete = document.getElementById('btn-delete-lb');
+        btnDelete.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+        btnDelete.style.pointerEvents = 'none';
+
+        try {
+            const res = await fetch('../../api_delete_gallery.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `car_id=${carId}&file_name=${encodeURIComponent(fileName)}`
+            });
+            const result = await res.json();
+            
+            if (result.status === 'success') {
+                alert("✅ Đã xóa ảnh thành công!");
+                window.location.reload(); // Tải lại trang để cập nhật lưới ảnh
+            } else {
+                alert("❌ Lỗi: " + result.message);
+                btnDelete.innerHTML = '<i class="fas fa-trash"></i> Xóa ảnh này';
+                btnDelete.style.pointerEvents = 'auto';
+            }
+        } catch(e) {
+            alert("❌ Lỗi kết nối đến máy chủ!");
+            btnDelete.innerHTML = '<i class="fas fa-trash"></i> Xóa ảnh này';
+            btnDelete.style.pointerEvents = 'auto';
+        }
     }
 </script>
 

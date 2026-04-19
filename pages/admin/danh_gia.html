@@ -32,7 +32,7 @@
             <header class="top-header">
                 <div class="header-search">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Tìm kiếm đánh giá, người dùng...">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm đánh giá, người dùng..." onkeyup="filterReviews()">
                 </div>
                 <div class="header-right">
                     <div class="notification-bell">
@@ -73,17 +73,17 @@
 
                 <div class="filters-bar">
                     <i class="fas fa-filter" style="color: #5D6879;"></i>
-                    <select class="filter-select">
-                        <option>Tất cả trạng thái</option>
-                        <option>Đã duyệt</option>
-                        <option>Chờ duyệt</option>
-                        <option>Đã ẩn</option>
+                    <select class="filter-select" id="statusFilter" onchange="filterReviews()">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="Đã duyệt">Đã duyệt</option>
+                        <option value="Chờ duyệt">Chờ duyệt</option>
+                        <option value="Đã ẩn">Đã ẩn</option>
                     </select>
-                    <select class="filter-select">
-                        <option>Tất cả số sao</option>
-                        <option>5 Sao</option>
-                        <option>4 Sao</option>
-                        <option>3 Sao trở xuống</option>
+                    <select class="filter-select" id="starFilter" onchange="filterReviews()">
+                        <option value="all">Tất cả số sao</option>
+                        <option value="5">5 Sao</option>
+                        <option value="4">4 Sao</option>
+                        <option value="3">3 Sao trở xuống</option>
                     </select>
                 </div>
 
@@ -241,6 +241,49 @@
             if (event.target === modal) {
                 closeModal();
             }
+        }
+        // ================= HÀM LỌC ĐÁNH GIÁ (TÌM KIẾM + BỘ LỌC) =================
+        function filterReviews() {
+            // 1. Lấy giá trị từ các ô nhập liệu
+            const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const starFilter = document.getElementById('starFilter').value;
+
+            // 2. Lấy danh sách tất cả các hàng trong bảng
+            const rows = document.querySelectorAll('.orders-table tbody tr');
+
+            rows.forEach(row => {
+                // Lấy nội dung text của từng cột để đem đi so sánh
+                const customer = row.cells[0].innerText.toLowerCase();
+                const carName = row.cells[1].innerText.toLowerCase();
+                const reviewContent = row.cells[2].innerText.toLowerCase();
+                const statusText = row.cells[3].innerText.trim();
+
+                // Đếm số lượng ngôi sao "đặc" (fas fa-star) trong cột nội dung đánh giá
+                const starCount = row.cells[2].querySelectorAll('.fas.fa-star').length;
+
+                // --- KIỂM TRA ĐIỀU KIỆN ---
+                
+                // Điều kiện 1: Khớp chữ tìm kiếm (Tìm trong tên KH, tên Xe hoặc Nội dung)
+                const isTextMatch = customer.includes(searchText) || carName.includes(searchText) || reviewContent.includes(searchText);
+
+                // Điều kiện 2: Khớp trạng thái
+                const isStatusMatch = (statusFilter === 'all') || statusText.includes(statusFilter);
+
+                // Điều kiện 3: Khớp số sao
+                let isStarMatch = true;
+                if (starFilter === '5') isStarMatch = (starCount === 5);
+                else if (starFilter === '4') isStarMatch = (starCount === 4);
+                else if (starFilter === '3') isStarMatch = (starCount <= 3);
+
+                // --- KẾT QUẢ ---
+                // Nếu thỏa mãn ĐỒNG THỜI cả 3 điều kiện thì mới hiển thị
+                if (isTextMatch && isStatusMatch && isStarMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none'; // Ẩn đi nếu không khớp
+                }
+            });
         }
     </script>
 </body>

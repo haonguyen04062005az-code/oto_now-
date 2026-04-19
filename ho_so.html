@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ cá nhân - OTO NOW</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { background: #f8fafc; }
+        .profile-wrapper { max-width: 1000px; margin: 120px auto 50px; padding: 0 20px; font-family: 'Inter', sans-serif; }
+        .profile-container { display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
+        
+        /* Cột bên trái: Thông tin tổng quan */
+        .profile-sidebar { background: #fff; border-radius: 20px; padding: 40px 20px; text-align: center; border: 1px solid #E2E8F0; box-shadow: 0 10px 30px rgba(0,0,0,0.02); height: fit-content; }
+        .profile-avatar-big { width: 120px; height: 120px; background: #000; color: #A1FF14; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; font-weight: 800; margin: 0 auto 20px; border: 5px solid #f1f5f9; }
+        .profile-name-title { font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 5px; }
+        .profile-role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; background: #f1f5f9; color: #64748B; font-size: 13px; font-weight: 600; margin-bottom: 25px; }
+        .profile-role-badge.is-admin { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        
+        .profile-stats { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #f1f5f9; padding-top: 25px; gap: 10px; }
+        .stat-item span { display: block; }
+        .stat-val { font-weight: 800; color: #0F172A; font-size: 18px; }
+        .stat-lbl { color: #94A3B8; font-size: 12px; }
+
+        /* Cột bên phải: Form chỉnh sửa */
+        .profile-main { background: #fff; border-radius: 20px; padding: 40px; border: 1px solid #E2E8F0; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+        .profile-section-title { font-size: 18px; font-weight: 700; color: #0F172A; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+        .profile-section-title i { color: #A1FF14; background: #000; width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group.full { grid-column: span 2; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; color: #475569; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px 15px; border: 1.5px solid #E2E8F0; border-radius: 12px; font-family: inherit; transition: 0.3s; box-sizing: border-box; }
+        .form-group input:focus { border-color: #A1FF14; outline: none; box-shadow: 0 0 0 4px rgba(161, 255, 20, 0.15); }
+        .form-group input:disabled { background: #F8FAFC; color: #94A3B8; cursor: not-allowed; }
+
+        .btn-update-profile { background: #000; color: #A1FF14; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
+        .btn-update-profile:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); background: #1E293B; }
+
+        @media (max-width: 768px) {
+            .profile-container { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <script src="header.js"></script>
+
+    <div class="profile-wrapper">
+        <div class="profile-container">
+            <div class="profile-sidebar">
+                <div class="profile-avatar-big" id="avatar-initial">U</div>
+                <h2 class="profile-name-title" id="display-name">Họ và Tên</h2>
+                <div class="profile-role-badge" id="display-role">Thành viên</div>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-val">0</span>
+                        <span class="stat-lbl">Đơn hàng</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-val">0</span>
+                        <span class="stat-lbl">Đánh giá</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-main">
+                <div class="profile-section-title">
+                    <i class="fas fa-user-edit"></i> Thông tin cá nhân
+                </div>
+                
+                <form id="profileForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Họ và tên</label>
+                            <input type="text" id="inp-name" value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Email (Không thể thay đổi)</label>
+                            <input type="email" id="inp-email" value="" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Số điện thoại</label>
+                            <input type="text" id="inp-phone" placeholder="Chưa cập nhật">
+                        </div>
+                        <div class="form-group">
+                            <label>Chức vụ</label>
+                            <input type="text" id="inp-role" value="" disabled>
+                        </div>
+                        <div class="form-group full">
+                            <label>Địa chỉ</label>
+                            <input type="text" id="inp-address" placeholder="Nhập địa chỉ của bạn">
+                        </div>
+                    </div>
+
+                    <div style="margin: 30px 0; border-top: 1px dashed #E2E8F0;"></div>
+
+                    <div class="profile-section-title">
+                        <i class="fas fa-lock"></i> Thay đổi mật khẩu
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Mật khẩu hiện tại</label>
+                            <input type="password" id="inp-old-pass" placeholder="••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label>Mật khẩu mới</label>
+                            <input type="password" id="inp-new-pass" placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-update-profile" onclick="updateProfile()">Cập nhật hồ sơ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Tải dữ liệu từ LocalStorage
+            const userSession = localStorage.getItem("currentUser");
+            if (!userSession) {
+                alert("Vui lòng đăng nhập để xem hồ sơ!");
+                window.location.href = "pages/auth/GD_dangnhap.html";
+                return;
+            }
+
+            const user = JSON.parse(userSession);
+            
+            // Đổ dữ liệu ra giao diện
+            document.getElementById('display-name').innerText = user.name;
+            document.getElementById('inp-name').value = user.name;
+            document.getElementById('inp-email').value = user.email || "";
+            document.getElementById('avatar-initial').innerText = user.name.charAt(0).toUpperCase();
+
+            // Kiểm tra quyền Admin
+            const roleEl = document.getElementById('display-role');
+            const roleInp = document.getElementById('inp-role');
+            if (user.email === "admin@otonow.com" || user.name.includes("Admin")) {
+                roleEl.innerText = "Quản trị viên";
+                roleEl.classList.add('is-admin');
+                roleInp.value = "Admin";
+            } else {
+                roleEl.innerText = "Khách hàng";
+                roleInp.value = "Thành viên";
+            }
+        });
+
+        function updateProfile() {
+            const newName = document.getElementById('inp-name').value.trim();
+            if (!newName) {
+                alert("Vui lòng nhập tên!");
+                return;
+            }
+
+            // Cập nhật lại bộ nhớ trình duyệt
+            const userSession = JSON.parse(localStorage.getItem("currentUser"));
+            userSession.name = newName;
+            localStorage.setItem("currentUser", JSON.stringify(userSession));
+
+            alert("Cập nhật thông tin thành công!");
+            window.location.reload(); // Tải lại để Header cũng cập nhật tên mới
+        }
+    </script>
+</body>
+</html>

@@ -294,6 +294,7 @@
             }
 
             // Hàm hỗ trợ in dữ liệu ra UI
+            // Hàm hỗ trợ in dữ liệu ra UI (Đã được nâng cấp để lấy dữ liệu thực từ DB)
             function updateCarUI(car) {
                 if (!car) return;
                 const giaBan = parseInt(car.gia_ban) || 0;
@@ -302,7 +303,20 @@
                 const formattedPrice = new Intl.NumberFormat('vi-VN').format(giaBan);
                 const formattedDeposit = new Intl.NumberFormat('vi-VN').format(currentDepositAmount);
 
-                if(orderImg) orderImg.src = getCarImage(car.ten_xe);
+                // Lấy ảnh động từ CSDL thay vì dùng hàm getCarImage thủ công
+                let imgUrl = 'assets/image/placeholder.png';
+                if (car.hinh_anh && car.hinh_anh !== 'NULL') {
+                    imgUrl = `assets/image/${car.hinh_anh}`;
+                } else if (car.image && car.image !== 'NULL') {
+                    imgUrl = car.image.startsWith('assets') ? car.image : `assets/image/${car.image}`;
+                }
+
+                if(orderImg) {
+                    orderImg.src = imgUrl;
+                    // Bổ sung tự động tải ảnh dự phòng nếu lỗi link
+                    orderImg.onerror = function() { this.src = 'assets/image/placeholder.png'; };
+                }
+                
                 if(orderName) orderName.innerText = car.ten_xe;
                 if(orderPrice) orderPrice.innerText = formattedPrice + ' VNĐ';
                 

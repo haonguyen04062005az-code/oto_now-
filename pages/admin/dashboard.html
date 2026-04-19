@@ -88,9 +88,13 @@
                     <p>Chào mừng quay trở lại, Admin!</p>
                 </div>
                 <div class="actions-top">
-            <button class="btn-primary">
-                <i class="fas fa-download"></i> Tải báo cáo
+            <div class="actions-top">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+            
+            <button class="btn-primary" onclick="exportDashboardToExcel()" style="background: #16A34A; border: none; box-shadow: 0 4px 15px rgba(22,163,74,0.3);">
+                <i class="fas fa-file-excel"></i> Xuất Excel
             </button>
+        </div>
         </div>
             </header>
 
@@ -235,6 +239,47 @@
                 console.log("Lỗi tải doanh thu:", error);
             }
         });
+        // ================= HÀM XUẤT BÁO CÁO EXCEL CHUYÊN NGHIỆP =================
+        function exportDashboardToExcel() {
+            // 1. Tạo bảng dữ liệu cho Sheet "Tổng quan"
+            // (Bạn có thể lấy dữ liệu tự động từ các thẻ HTML bằng document.getElementById)
+            const overviewData = [
+                ["CHỈ SỐ ĐO LƯỜNG", "GIÁ TRỊ HIỆN TẠI", "XU HƯỚNG (SO VỚI THÁNG TRƯỚC)"],
+                ["Tổng số xe", 2680, "Tăng 12%"],
+                ["Xe bán tháng này", 58, "Bằng 0%"],
+                ["Doanh thu (VND)", 14209614000, "Tăng 15%"],
+                ["Đang niêm yết", 156, "Giảm 4%"]
+            ];
+
+            // 2. Tạo bảng dữ liệu cho Sheet "Biểu đồ doanh thu"
+            const revenueExportData = [
+                ["THÁNG", "DOANH THU (VND)"]
+            ];
+            // Tự động quét biến revenueData có sẵn để đổ vào Excel
+            if (typeof revenueData !== 'undefined') {
+                revenueData.forEach(item => {
+                    revenueExportData.push([item.month, item.revenue]);
+                });
+            }
+
+            // 3. Khởi tạo một File Excel mới (Workbook)
+            const wb = XLSX.utils.book_new();
+
+            // 4. Chuyển đổi dữ liệu Text thành các Trang tính (Sheet)
+            const ws1 = XLSX.utils.aoa_to_sheet(overviewData);
+            const ws2 = XLSX.utils.aoa_to_sheet(revenueExportData);
+
+            // Tự động căn chỉnh độ rộng các cột cho đẹp mắt
+            ws1['!cols'] = [{ wch: 25 }, { wch: 20 }, { wch: 35 }];
+            ws2['!cols'] = [{ wch: 15 }, { wch: 25 }];
+
+            // Gắn các Trang tính vào File
+            XLSX.utils.book_append_sheet(wb, ws1, "Tong_Quan_Kinh_Doanh");
+            XLSX.utils.book_append_sheet(wb, ws2, "Doanh_Thu_Theo_Thang");
+
+            // 5. Kích hoạt tự động tải file xuống máy tính
+            XLSX.writeFile(wb, "Bao_Cao_Kinh_Doanh_OtoNow.xlsx");
+        }
     </script>
 </body>
 </html>
