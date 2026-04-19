@@ -49,13 +49,28 @@
             <div class="contact-form-col">
                 <form action="#" method="POST"> 
                     <div class="form-row">
-                        <div class="form-group"><label class="form-label">Họ</label><input type="text" class="form-input" placeholder="Nhập họ của bạn"></div>
-                        <div class="form-group"><label class="form-label">Tên</label><input type="text" class="form-input" placeholder="Nhập tên của bạn"></div>
+                        <div class="form-group">
+                            <label class="form-label">Họ</label>
+                            <input type="text" id="contact-ho" class="form-input" placeholder="Nhập họ của bạn">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tên</label>
+                            <input type="text" id="contact-ten" class="form-input" placeholder="Nhập tên của bạn">
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 25px;"><label class="form-label">Địa chỉ Email</label><input type="email" class="form-input" placeholder="Nhập email của bạn"></div>
-                    <div class="form-group" style="margin-bottom: 25px;"><label class="form-label">Chủ đề</label><input type="text" class="form-input" placeholder="Bạn cần hỗ trợ về vấn đề gì?"></div>
-                    <div class="form-group" style="margin-bottom: 25px;"><label class="form-label">Nội dung tin nhắn</label><textarea class="form-textarea" placeholder="Nhập chi tiết yêu cầu của bạn..."></textarea></div>
-                    <button type="button" class="submit-btn">Gửi tin nhắn <i class="fas fa-paper-plane"></i></button>
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label class="form-label">Địa chỉ Email</label>
+                        <input type="email" id="contact-email" class="form-input" placeholder="Nhập email của bạn">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label class="form-label">Chủ đề</label>
+                        <input type="text" id="contact-chude" class="form-input" placeholder="Bạn cần hỗ trợ về vấn đề gì?">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label class="form-label">Nội dung tin nhắn</label>
+                        <textarea id="contact-noidung" class="form-textarea" placeholder="Nhập chi tiết yêu cầu của bạn..."></textarea>
+                    </div>
+                    <button type="button" class="submit-btn" onclick="submitContact(event)">Gửi tin nhắn <i class="fas fa-paper-plane"></i></button>
                 </form>
             </div>
 
@@ -114,5 +129,34 @@
         </div>
         <div class="detail-copyright-row">© 2026 OTO Now. All rights reserved. Designed with Neon Theme.</div>
     </div>
+    <script>
+        // ================= HÀM KIỂM TRA VÀ GỬI LIÊN HỆ =================
+        function submitContact(event) {
+            if(event) event.preventDefault(); 
+
+            // 1. Lấy dữ liệu từ các ô nhập
+            const ho = document.getElementById('contact-ho').value.trim();
+            const ten = document.getElementById('contact-ten').value.trim();
+            const email = document.getElementById('contact-email').value.trim();
+            const chude = document.getElementById('contact-chude').value.trim();
+            const noidung = document.getElementById('contact-noidung').value.trim();
+            
+            // 2. Kiểm tra điều kiện (Phải điền ĐẦY ĐỦ mới cho qua)
+            if (ho === "" || ten === "" || email === "" || chude === "" || noidung === "") {
+                alert("⚠️ Vui lòng điền đầy đủ các thông tin (Họ, Tên, Email, Chủ đề và Nội dung) trước khi gửi!");
+                return; // Dừng lại ngay lập tức
+            }
+            
+            // 3. Nếu đã nhập đủ, báo thành công
+            alert("✅ Cảm ơn bạn đã liên hệ! Đội ngũ chăm sóc khách hàng của OTO NOW sẽ phản hồi bạn sớm nhất."); 
+            
+            // 4. Xóa trắng form cho gọn gàng
+            document.getElementById('contact-ho').value = '';
+            document.getElementById('contact-ten').value = '';
+            document.getElementById('contact-email').value = '';
+            document.getElementById('contact-chude').value = '';
+            document.getElementById('contact-noidung').value = '';
+        }
+    </script>
 </body>
 </html>
