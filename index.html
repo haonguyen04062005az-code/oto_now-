@@ -763,45 +763,73 @@
             }
         }
 
-        const botReplies = [
-            "Dạ, hiện tại OTO NOW đang phân phối các dòng xe cao cấp từ Audi, BMW, Lamborghini cho đến xe điện VinFast. Bạn đang phân vân hãng nào ạ?",
-            "Vâng, thủ tục mua xe trả góp bên mình hỗ trợ vay lên đến 80% giá trị xe, chỉ cần CCCD thôi ạ. Quá trình giải ngân cực kỳ nhanh chóng.",
-            "Tuyệt vời! Để nhận báo giá lăn bánh chi tiết và các chương trình khuyến mãi hiện có, bạn vui lòng để lại **Số điện thoại**, chuyên viên bên mình sẽ gọi lại tư vấn ngay ạ!",
-            "Dạ, bạn có muốn đặt lịch lái thử (Home Test Drive) để bên mình mang xe đến tận nhà cho bạn trải nghiệm không ạ?",
-            "Cảm ơn bạn đã quan tâm. OTO NOW sẽ liên hệ với bạn trong thời gian sớm nhất. Chúc bạn một ngày tốt lành! 😊"
-        ];
-        let replyIndex = 0;
+        let allCarsData = [];
+// Lấy dữ liệu xe để chatbot biết (nếu đã có hàm loadCarsFromDatabase thì bỏ dòng này)
+fetch('api_get_cars.php').then(r=>r.json()).then(d=>{ allCarsData = d; }).catch(()=>{});
 
-        function sendMsg() {
-            const input = document.getElementById('chatInput');
-            const msg = input.value.trim();
-            if(!msg) return;
+const chatHistory = [];
+const GROQ_API_KEY = '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'; // key của bạn
 
-            const chatBody = document.getElementById('chatBoxBody');
-            const userDiv = document.createElement('div');
-            userDiv.className = 'chat-msg user-msg';
-            userDiv.innerText = msg;
-            chatBody.appendChild(userDiv);
-            
-            input.value = ''; 
-            chatBody.scrollTop = chatBody.scrollHeight; 
+async function askGroq(userMsg) {
+    let carContext = '';
+    if (allCarsData.length > 0) {
+        const carList = allCarsData.map(car => {
+            const gia = new Intl.NumberFormat('vi-VN').format(car.gia_ban);
+            const sl = parseInt(car.so_luong);
+            const tt = (!isNaN(sl) && sl <= 0) ? 'Hết hàng' : `Còn ${sl} xe`;
+            return `- ${car.ten_xe} | Năm: ${car.nam_sx} | Giá: ${gia} VNĐ | Màu: ${car.mau_sac} | ${tt}`;
+        }).join('\n');
+        carContext = `\n\nDANH SÁCH XE HIỆN CÓ:\n${carList}`;
+    }
 
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'chat-msg bot-msg typing-dots';
-            typingDiv.innerHTML = '<span>.</span><span>.</span><span>.</span>';
-            chatBody.appendChild(typingDiv);
-            chatBody.scrollTop = chatBody.scrollHeight;
+    const systemPrompt = `Bạn là trợ lý tư vấn xe của OTO NOW. Trả lời bằng tiếng Việt, ngắn gọn 3-4 câu. Hotline: 1900 1234.${carContext}`;
 
-            setTimeout(() => {
-                chatBody.removeChild(typingDiv); 
-                const botDiv = document.createElement('div');
-                botDiv.className = 'chat-msg bot-msg';
-                botDiv.innerHTML = botReplies[replyIndex]; 
-                chatBody.appendChild(botDiv);
-                chatBody.scrollTop = chatBody.scrollHeight;
-                if(replyIndex < botReplies.length - 1) { replyIndex++; }
-            }, 1500);
-        }
+    chatHistory.push({ role: 'user', content: userMsg });
+
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
+        body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [{ role: 'system', content: systemPrompt }, ...chatHistory],
+            max_tokens: 512
+        })
+    });
+
+    const data = await res.json();
+    const reply = data?.choices?.[0]?.message?.content || 'Dạ, tôi đang gặp sự cố. Vui lòng thử lại!';
+    chatHistory.push({ role: 'assistant', content: reply });
+    return reply;
+}
+
+async function sendMsg() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const chatBody = document.getElementById('chatBoxBody');
+    const userDiv = document.createElement('div');
+    userDiv.className = 'chat-msg user-msg';
+    userDiv.innerText = msg;
+    chatBody.appendChild(userDiv);
+    input.value = '';
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'chat-msg bot-msg typing-dots';
+    typingDiv.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+    chatBody.appendChild(typingDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    const reply = await askGroq(msg);
+    chatBody.removeChild(typingDiv);
+
+    const botDiv = document.createElement('div');
+    botDiv.className = 'chat-msg bot-msg';
+    botDiv.innerHTML = reply.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+    chatBody.appendChild(botDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
     // ================= XỬ LÝ HIỆU ỨNG CLICK HỎI ĐÁP (FAQ) =================
     document.addEventListener("DOMContentLoaded", function() {
         const faqQuestions = document.querySelectorAll('.faq-question');

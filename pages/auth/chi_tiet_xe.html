@@ -290,15 +290,25 @@
 
         grid.innerHTML = html;
 
-        // Cập nhật thông tin chữ và ảnh đại diện phía trên
+       // --- CẬP NHẬT LOGIC LẤY 3D MODEL TỰ ĐỘNG ---
+        let modelPath = null;
+        
+        // 1. Ưu tiên lấy file 3D bạn vừa Upload từ trang Admin (Database)
+        if (carData.mo_hinh_3d && carData.mo_hinh_3d !== 'NULL' && carData.mo_hinh_3d !== '') {
+            modelPath = `../../assets/3d_models/${carData.mo_hinh_3d}`;
+        } 
+        // 2. Nếu không có, mới dùng đến hàm check tên cũ (Dự phòng)
+        else {
+            modelPath = getCarModel(carData.ten_xe);
+        }
+
         currentCarInfo = {
             name: carData.ten_xe,
             price: formattedPrice + ' VNĐ',
             image: mainImg,
-            model: getCarModel(carData.ten_xe),
+            model: modelPath, // Sử dụng đường dẫn đã tìm được ở trên
             year: carData.nam_sx || '2024',
             mau_sac: carData.mau_sac || 'Cơ bản',
-            
         };
         
         safeSetText('detail-name', currentCarInfo.name);
@@ -396,7 +406,10 @@
                 const btnDeleteLb = document.getElementById('btn-delete-lb');
                 if(btnDeleteLb) btnDeleteLb.style.display = 'block';
 
-                adminMenuHtml = `... (code cũ giữ nguyên)`;
+                adminMenuHtml = `
+                        <a href="/OTO_NOW/pages/admin/dashboard.html" class="dropdown-item" style="color: #b45309; font-weight: 700; background: #fffbeb; border-bottom: 1px solid #fde68a;">
+                            <i class="fas fa-crown" style="color: #f59e0b; width: 20px;"></i> Quản trị hệ thống
+                        </a>`;
             }
 
             if(authSection) {
@@ -534,10 +547,26 @@
         }
     });
 
-    function handleLogout() { 
-        localStorage.removeItem("currentUser"); 
-        window.location.reload(); 
+    // ================= HÀM ĐĂNG XUẤT RIÊNG CHO TRANG CHI TIẾT =================
+    function handleLogout() {
+        // 1. Gọi API xóa Session (Dùng ../../ vì file này nằm sâu trong thư mục pages)
+        fetch('../../api_logout.php')
+            .then(res => res.json())
+            .then(data => {
+                // 2. Xóa dữ liệu trình duyệt
+                localStorage.removeItem("currentUser");
+                
+                // 3. Thông báo và đẩy thẳng về trang chủ ngoài cùng
+                alert("Đã đăng xuất! Chào tạm biệt bạn.");
+                window.location.href = '../../index.html';
+            })
+            .catch(err => {
+                // Đề phòng lỗi mạng vẫn cho thoát
+                localStorage.removeItem("currentUser");
+                window.location.href = '../../index.html';
+            });
     }
+    
     // ================= HÀM XÓA ẢNH TRONG LIGHTBOX =================
     async function deleteCurrentImage(event) {
         event.stopPropagation(); // Ngăn việc click làm đóng luôn màn hình đen

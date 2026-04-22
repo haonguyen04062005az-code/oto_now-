@@ -72,11 +72,11 @@
                 <div class="form-grid">
                     <div class="input-group form-full">
                         <label class="input-label">Tên chủ thẻ / Tài khoản</label>
-                        <input type="text" class="input-field" placeholder="NGUYEN VAN A">
+                        <input type="text" id="inp-card-name" class="input-field" placeholder="NGUYEN VAN A">
                     </div>
                     <div class="input-group form-full">
                         <label class="input-label">Số thẻ / Số tài khoản</label>
-                        <input type="text" class="input-field" placeholder="XXXX XXXX XXXX XXXX">
+                        <input type="text" id="inp-card-number" class="input-field" placeholder="XXXX XXXX XXXX XXXX">
                     </div>
                 </div>
             </div>
@@ -200,7 +200,7 @@
 
     <script>
         // ⚠️ BẮT BUỘC: ĐIỀN ĐỊA CHỈ IP CỦA MÁY TÍNH BẠN VÀO ĐÂY
-        const MY_IP = "192.168.1.8"; 
+        const MY_IP = "192.168.1.18"; 
 
         let paymentInterval;
         let currentOrderId;
@@ -425,22 +425,33 @@
 
         // ================= XỬ LÝ THANH TOÁN =================
         // ================= XỬ LÝ THANH TOÁN VÀ TẠO QR =================
+        // ================= XỬ LÝ THANH TOÁN VÀ TẠO QR =================
         function processCheckout() {
-            const name = document.getElementById('inp-name').value;
-            const phone = document.getElementById('inp-phone').value;
+            const name = document.getElementById('inp-name').value.trim();
+            const phone = document.getElementById('inp-phone').value.trim();
+            
             globalCustomerName = name || "Khách hàng";
             globalCustomerPhone = phone || "09xx";
             
+            // 1. Bẫy lỗi: Bỏ trống Họ tên hoặc Số điện thoại
             if(!name || !phone) { 
-                alert("Vui lòng nhập Họ tên và Số điện thoại!"); 
+                alert("⚠️ Vui lòng nhập đầy đủ Họ tên và Số điện thoại!"); 
                 return; 
             }
 
+            // 2. Bẫy lỗi: Số điện thoại (Bắt buộc bắt đầu bằng số 0 và đúng 10 chữ số)
+            const phoneRegex = /^0\d{9}$/;
+            if (!phoneRegex.test(phone)) {
+                alert("⚠️ Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 chữ số (VD: 0912345678).");
+                return;
+            }
+
+            // 3. Kiểm tra Phương thức nhận xe
             const activeDelivery = document.querySelector('.delivery-method.active input[type="radio"]').value;
             if (activeDelivery === 'home') {
-                const address = document.getElementById('inp-address').value;
+                const address = document.getElementById('inp-address').value.trim();
                 if (!address) {
-                    alert("Vui lòng nhập hoặc định vị Địa chỉ để OTO NOW giao xe tới cho bạn nhé!");
+                    alert("⚠️ Vui lòng nhập hoặc định vị Địa chỉ để OTO NOW giao xe tới cho bạn nhé!");
                     return;
                 }
                 globalDeliveryMethod = "Giao tận nhà";
@@ -450,26 +461,30 @@
                 globalDeliveryAddress = "Showroom OTO NOW";
             }
 
+            // 4. Bẫy lỗi: Thanh toán bằng Thẻ (Bắt buộc điền Tên thẻ và Số thẻ)
             const activePaymentMethod = document.querySelector('.payment-method.active');
             const methodText = activePaymentMethod.innerText.toLowerCase();
-            const isQRMethod = methodText.includes('ngân hàng') || methodText.includes('mã');
+            const isCardMethod = methodText.includes('thẻ');
 
-            if (!isQRMethod) {
+            if (isCardMethod) {
+                const cardName = document.getElementById('inp-card-name').value.trim();
+                const cardNumber = document.getElementById('inp-card-number').value.trim();
+                
+                if (!cardName || !cardNumber) {
+                    alert("⚠️ Vui lòng điền đầy đủ Tên chủ thẻ và Số thẻ trước khi thanh toán!");
+                    return;
+                }
+                // Nếu là thẻ và điền đủ, cho qua luôn không cần hiện mã QR
                 executeOrderSuccess("Thanh toán qua thẻ thành công! OTO NOW đã ghi nhận khoản đặt cọc 20%."); 
                 return;
             }
 
-            // 1. Khởi tạo mã đơn
+            // 5. Nếu chọn Chuyển khoản (có chữ ngân hàng), thực hiện tạo QR
             currentOrderId = "ORD" + Date.now();
             fetch(`api_payment.php?action=create&order_id=${currentOrderId}`);
 
-            // 2. Gắn ĐỒNG THỜI Mã đơn và Số tiền 20% vào Link chuyển sang điện thoại
             const mobileUrl = `http://${MY_IP}/OTO_NOW/xac_nhan_qr.html?order_id=${currentOrderId}&amount=${currentDepositAmount}`;
             const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(mobileUrl)}`;
-            
-            // 💡 MẸO: NẾU BẠN MUỐN HIỂN THỊ MÃ QR CỦA NGÂN HÀNG THẬT (VIETQR) THÌ DÙNG LINK NÀY:
-            // Bạn thay "MB" thành ngân hàng của bạn, "0988888888" thành STK của bạn
-            // const qrApiUrl = `https://img.vietqr.io/image/MB-0988888888-compact2.png?amount=${currentDepositAmount}&addInfo=${currentOrderId}`;
 
             document.getElementById('qr-image-display').src = qrApiUrl;
             document.getElementById('qrModal').classList.add('show');
